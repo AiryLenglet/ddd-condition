@@ -1,9 +1,12 @@
 package conditions.spring.event_bus;
 
-import lombok.extern.slf4j.Slf4j;
 import conditions.core.event.Event;
 import conditions.core.event.EventBus;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.Collection;
@@ -11,13 +14,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+@Service
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Slf4j
 public class InMemoryEventBus implements EventBus {
 
-    final Map<Class<?>, Collection<Handler<?>>> handlers = new ConcurrentHashMap<>();
-    final Map<Class<?>, Collection<Handler<?>>> handlers_ = new ConcurrentHashMap<>();
-
-    private ApplicationEventPublisher applicationEventPublisher;
+    private final Map<Class<?>, Collection<Handler<?>>> handlers = new ConcurrentHashMap<>();
+    private final Map<Class<?>, Collection<Handler<?>>> postCommitHandlers = new ConcurrentHashMap<>();
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public InMemoryEventBus(
             ApplicationEventPublisher applicationEventPublisher
@@ -33,7 +37,7 @@ public class InMemoryEventBus implements EventBus {
 
     @Override
     public <T extends Event> void subscribeForAfterCommit(Class<T> eventClass, Handler<T> handler) {
-        this.handlers_.computeIfAbsent(eventClass, c -> new ConcurrentLinkedQueue<>())
+        this.postCommitHandlers.computeIfAbsent(eventClass, c -> new ConcurrentLinkedQueue<>())
                 .add(handler);
     }
 
@@ -49,17 +53,17 @@ public class InMemoryEventBus implements EventBus {
                     .forEach(handler -> handler.handle(event));
         }
 
-        final var handlers_ = this.handlers_.get(event.getClass());
+        final var handlers_ = this.postCommitHandlers.get(event.getClass());
         if (handlers_ != null) {
             handlers_.stream()
                     .map(handler -> (Handler) handler)
                     .peek(handler -> log.info("Event handled by '{}'", handler.getClass()))
                     .map(handler -> new AfterCommit(event, handler))
-                    .forEach(e -> this.applicationEventPublisher.publishEvent(e));
+                    .forEach(this.applicationEventPublisher::publishEvent);
         }
     }
 
-    public static class AfterCommit {
+    private class AfterCommit {
 
         private final Event event;
         private final Handler<Event> handler;
