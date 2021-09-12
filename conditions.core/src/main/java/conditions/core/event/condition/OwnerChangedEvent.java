@@ -1,7 +1,7 @@
 package conditions.core.event.condition;
 
-import lombok.ToString;
 import conditions.core.event.Event;
+import lombok.ToString;
 
 @ToString
 public class OwnerChangedEvent implements Event {

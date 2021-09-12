@@ -1,4 +1,4 @@
-module conditions.spring {
+open module conditions.spring {
     requires conditions.core;
 
     requires spring.context;

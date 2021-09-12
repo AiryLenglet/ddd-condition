@@ -1,17 +1,20 @@
 package conditions.core.model;
 
+import conditions.core.event.condition.ConditionClosedEvent;
+import conditions.core.event.condition.ConditionOpenedEvent;
+import conditions.core.event.condition.ConditionSubmittedEvent;
+import conditions.core.event.condition.OwnerChangedEvent;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import conditions.core.event.condition.OwnerChangedEvent;
-import conditions.core.event.condition.ConditionClosedEvent;
-import conditions.core.event.condition.ConditionOpenedEvent;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
+@Slf4j
 @Entity
 @Builder(access = AccessLevel.PACKAGE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -97,10 +100,20 @@ public class Condition extends Aggregate {
         this.addEvent(new ConditionClosedEvent(this.conditionId));
     }
 
-    public void open() {
+    public void submit() {
         if (this.status != Status.DRAFT) {
             throw new IllegalArgumentException();
         }
+        log.info("Submitting condition {}", this.conditionId);
+        this.status = Status.PENDING;
+        this.addEvent(new ConditionSubmittedEvent(this.conditionId));
+    }
+
+    public void open() {
+        if (this.status != Status.PENDING) {
+            throw new IllegalArgumentException();
+        }
+        log.info("Opening condition {}", this.conditionId);
         this.status = Status.OPEN;
         this.addEvent(new ConditionOpenedEvent(this.conditionId));
     }

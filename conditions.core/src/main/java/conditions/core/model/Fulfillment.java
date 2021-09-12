@@ -1,11 +1,6 @@
 package conditions.core.model;
 
-import conditions.core.event.fulfillment.ConditionFulfilledEvent;
-import conditions.core.event.fulfillment.FulfillmentReviewAskedForChange;
-import conditions.core.event.fulfillment.FulfillmentVerificationAskedForChange;
-import conditions.core.event.fulfillment.FulfillmentCancelledEvent;
-import conditions.core.event.fulfillment.FulfillmentFinishedEvent;
-import conditions.core.event.fulfillment.FulfillmentOpenedEvent;
+import conditions.core.event.fulfillment.*;
 
 import javax.persistence.*;
 

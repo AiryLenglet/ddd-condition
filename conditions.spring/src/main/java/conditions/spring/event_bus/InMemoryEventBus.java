@@ -57,29 +57,20 @@ public class InMemoryEventBus implements EventBus {
         if (handlers_ != null) {
             handlers_.stream()
                     .map(handler -> (Handler) handler)
-                    .peek(handler -> log.info("Event handled by '{}'", handler.getClass()))
                     .map(handler -> new AfterCommit(event, handler))
                     .forEach(this.applicationEventPublisher::publishEvent);
         }
     }
 
-    private class AfterCommit {
-
-        private final Event event;
-        private final Handler<Event> handler;
-
-        public AfterCommit(
-                Event event,
-                Handler<Event> handler
-        ) {
-            this.event = event;
-            this.handler = handler;
-        }
+    private record AfterCommit(
+            Event event,
+            Handler<Event> handler
+    ) {
     }
 
     @TransactionalEventListener
     void handleAfterCommit(AfterCommit afterCommit) {
-        log.info("Handling after commit");
+        log.info("Handling post commit event {} with {}", afterCommit.event, afterCommit.handler);
         try {
             afterCommit.handler.handle(afterCommit.event);
         } catch (Exception e) {

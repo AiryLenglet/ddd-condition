@@ -35,4 +35,11 @@ public abstract class UuidId implements Serializable {
         }
         return this.id.equals(((UuidId) obj).getId());
     }
+
+    @Override
+    public String toString() {
+        return "UuidId{" +
+                "id='" + id + '\'' +
+                '}';
+    }
 }
