@@ -32,7 +32,7 @@ public class Fulfillment extends Aggregate {
         //package-private for hibernate
     }
 
-    public Fulfillment(ConditionId conditionId, boolean fulfillmentReviewRequired) {
+    Fulfillment(ConditionId conditionId, boolean fulfillmentReviewRequired) {
         this.conditionId = conditionId;
         this.fulfillmentReviewRequired = fulfillmentReviewRequired;
         this.addEvent(new FulfillmentOpenedEvent(this.fulfillmentId, this.conditionId));
@@ -40,24 +40,6 @@ public class Fulfillment extends Aggregate {
 
     public FulfillmentId getFulfillmentId() {
         return fulfillmentId;
-    }
-
-    enum Status {
-        FULFILLMENT,
-        VERIFICATION,
-        REVIEW,
-        CANCELLED,
-        DONE;
-    }
-
-    public enum FulfillmentVerification {
-        APPROVE,
-        CHANGE_REQUEST
-    }
-
-    public enum FulfillmentReview {
-        APPROVE,
-        CHANGE_REQUEST
     }
 
     public void fulfill(String comment) {
@@ -121,5 +103,23 @@ public class Fulfillment extends Aggregate {
     public void finished() {
         this.status = Status.DONE;
         this.addEvent(new FulfillmentFinishedEvent(this.fulfillmentId, this.conditionId));
+    }
+
+    enum Status {
+        FULFILLMENT,
+        VERIFICATION,
+        REVIEW,
+        CANCELLED,
+        DONE;
+    }
+
+    public enum FulfillmentVerification {
+        APPROVE,
+        CHANGE_REQUEST
+    }
+
+    public enum FulfillmentReview {
+        APPROVE,
+        CHANGE_REQUEST
     }
 }

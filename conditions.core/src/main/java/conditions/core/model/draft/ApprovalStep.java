@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 import javax.persistence.*;
+import java.time.Instant;
 
 @Entity
 @Builder(access = AccessLevel.PACKAGE)
@@ -26,8 +27,11 @@ public class ApprovalStep extends Aggregate {
 
     private String justification;
 
-    public ApprovalStep(ConditionId conditionId) {
+    private Instant creationDate;
+
+    public ApprovalStep(ConditionId conditionId, Instant creationDate) {
         this.conditionId = conditionId;
+        this.creationDate = creationDate;
     }
 
     ApprovalStep() {
@@ -39,7 +43,6 @@ public class ApprovalStep extends Aggregate {
     }
 
     public void accept() {
-        validateStep();
         this.addEvent(new ConditionAcceptedEvent(this.conditionId, this.approvalStepId));
     }
 

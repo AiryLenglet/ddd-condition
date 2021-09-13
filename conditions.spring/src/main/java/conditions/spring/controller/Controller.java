@@ -37,9 +37,10 @@ public class Controller {
 
     @PostMapping(path = "/{id}/approve")
     public void approve(
-            @PathVariable("id") String id
+            @PathVariable("id") String id,
+            @RequestBody ApproveConditionUseCase.Request body
     ) {
-        this.approveConditionUseCase.execute(id);
+        this.approveConditionUseCase.execute(id, body);
     }
 
     @PutMapping(path = "/{id}")

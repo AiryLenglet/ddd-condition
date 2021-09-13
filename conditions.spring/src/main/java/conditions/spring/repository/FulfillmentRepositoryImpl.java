@@ -21,12 +21,12 @@ public class FulfillmentRepositoryImpl implements FulfillmentRepository {
     }
 
     @Override
-    public Fulfillment save(Fulfillment fulfillment) {
+    public void save(Fulfillment fulfillment) {
         Event event;
         //handling before or after saving ?
         while ((event = fulfillment.pollEvent()) != null) {
             this.eventBus.publish(event);
         }
-        return this.fulfillmentRepository.save(fulfillment);
+        this.fulfillmentRepository.save(fulfillment);
     }
 }

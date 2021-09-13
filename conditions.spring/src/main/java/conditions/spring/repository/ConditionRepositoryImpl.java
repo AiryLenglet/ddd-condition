@@ -22,13 +22,13 @@ public class ConditionRepositoryImpl implements ConditionRepository {
     }
 
     @Override
-    public Condition save(Condition condition) {
+    public void save(Condition condition) {
         Event event;
         //handling before or after saving ?
         while ((event = condition.pollEvent()) != null) {
             this.eventBus.publish(event);
         }
-        return this.springConditionRepository.save(condition);
+        this.springConditionRepository.save(condition);
     }
 
     @Override

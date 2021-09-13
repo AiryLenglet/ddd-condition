@@ -62,12 +62,6 @@ public class InMemoryEventBus implements EventBus {
         }
     }
 
-    private record AfterCommit(
-            Event event,
-            Handler<Event> handler
-    ) {
-    }
-
     @TransactionalEventListener
     void handleAfterCommit(AfterCommit afterCommit) {
         log.info("Handling post commit event {} with {}", afterCommit.event, afterCommit.handler);
@@ -76,5 +70,11 @@ public class InMemoryEventBus implements EventBus {
         } catch (Exception e) {
             log.error("Something happened", e);
         }
+    }
+
+    private record AfterCommit(
+            Event event,
+            Handler<Event> handler
+    ) {
     }
 }

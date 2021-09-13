@@ -1,16 +1,15 @@
 package conditions.spring.event_bus;
 
 import conditions.core.event.EventBus;
+import conditions.core.event.approval.AskedChangeEvent;
 import conditions.core.event.approval.ConditionAcceptedEvent;
 import conditions.core.event.approval.ConditionRejectedEvent;
 import conditions.core.event.condition.ConditionOpenedEvent;
 import conditions.core.event.condition.ConditionSubmittedEvent;
 import conditions.core.event.fulfillment.ConditionFulfilledEvent;
 import conditions.core.event.fulfillment.FulfillmentOpenedEvent;
-import conditions.core.event_handler.ConditionAcceptedEventHandler;
-import conditions.core.event_handler.ConditionOpenedEventHandler;
-import conditions.core.event_handler.ConditionRejectedEventHandler;
-import conditions.core.event_handler.ConditionSubmittedEventHandler;
+import conditions.core.event_handler.*;
+import conditions.core.factory.JavaClock;
 import conditions.core.repository.ApprovalStepRepository;
 import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.EscalationStepRepository;
@@ -44,9 +43,10 @@ public class EventSubscriptionConfig implements ApplicationListener<ApplicationR
         });
 
         this.eventBus.subscribe(ConditionRejectedEvent.class, new ConditionRejectedEventHandler(this.escalationStepRepository));
-        this.eventBus.subscribe(ConditionSubmittedEvent.class, new ConditionSubmittedEventHandler(approvalStepRepository));
+        this.eventBus.subscribe(ConditionSubmittedEvent.class, new ConditionSubmittedEventHandler(approvalStepRepository, new JavaClock()));
         this.eventBus.subscribe(ConditionAcceptedEvent.class, new ConditionAcceptedEventHandler(conditionRepository));
         this.eventBus.subscribe(ConditionOpenedEvent.class, new ConditionOpenedEventHandler(conditionRepository, fulfillmentRepository));
+        this.eventBus.subscribe(AskedChangeEvent.class, new AskedChangeEventHandler(conditionRepository));
 
         //notifications
         this.eventBus.subscribeForAfterCommit(FulfillmentOpenedEvent.class, e -> log.info("Notifying owner he has to fulfill"));

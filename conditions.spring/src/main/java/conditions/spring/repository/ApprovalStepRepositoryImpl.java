@@ -4,7 +4,6 @@ import conditions.core.event.Event;
 import conditions.core.event.EventBus;
 import conditions.core.model.ConditionId;
 import conditions.core.model.draft.ApprovalStep;
-import conditions.core.model.draft.ApprovalStepId;
 import conditions.core.repository.ApprovalStepRepository;
 import org.springframework.stereotype.Service;
 
@@ -33,12 +32,7 @@ public class ApprovalStepRepositoryImpl implements ApprovalStepRepository {
     }
 
     @Override
-    public ApprovalStep findById(ApprovalStepId approvalStepId) {
-        return this.approvalStepRepository.getById(approvalStepId);
-    }
-
-    @Override
     public ApprovalStep findByConditionId(ConditionId conditionId) {
-        return this.approvalStepRepository.findByConditionId(conditionId);
+        return this.approvalStepRepository.findTopByConditionIdOrderByCreationDateDesc(conditionId);
     }
 }

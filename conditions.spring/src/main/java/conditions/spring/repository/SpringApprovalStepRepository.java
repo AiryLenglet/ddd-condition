@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SpringApprovalStepRepository extends JpaRepository<ApprovalStep, ApprovalStepId> {
 
-    ApprovalStep findByConditionId(ConditionId conditionId);
+    ApprovalStep findTopByConditionIdOrderByCreationDateDesc(ConditionId conditionId);
 }

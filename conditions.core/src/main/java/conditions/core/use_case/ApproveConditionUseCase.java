@@ -16,10 +16,27 @@ public class ApproveConditionUseCase {
     }
 
     @Transactional
-    public void execute(String approvalId) {
-        final var approvalStep = this.approvalStepRepository.findByConditionId(ConditionId.of(approvalId));
-        approvalStep.setJustification("all os ok");
-        approvalStep.accept();
+    public void execute(String conditionId, Request request) {
+        final var approvalStep = this.approvalStepRepository.findByConditionId(ConditionId.of(conditionId));
+        approvalStep.setJustification(request.justification());
+        if (request.action() == Action.ACCEPT) {
+            approvalStep.accept();
+        } else if (request.action() == Action.ASK_CHANGE) {
+            approvalStep.askForChange();
+        } else {
+            throw new IllegalArgumentException();
+        }
         this.approvalStepRepository.save(approvalStep);
+    }
+
+    public static enum Action {
+        ACCEPT,
+        ASK_CHANGE
+    }
+
+    public static record Request(
+            String justification,
+            Action action
+    ) {
     }
 }

@@ -4,7 +4,7 @@ import conditions.core.model.Condition;
 import conditions.core.model.ConditionId;
 
 public interface ConditionRepository {
-    Condition save(Condition condition);
+    void save(Condition condition);
 
     Condition findById(ConditionId id);
 }

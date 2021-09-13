@@ -15,15 +15,17 @@ public class CreateConditionUseCase {
         this.conditionRepository = conditionRepository;
     }
 
+    @Transactional
+    public Response execute() {
+        final var condition = new Condition("transaction");
+        this.conditionRepository.save(condition);
+        return new Response(
+                condition.getConditionId().getId()
+        );
+    }
+
     public static record Response(
             String conditionId
     ) {
-    }
-
-    @Transactional
-    public Response execute() {
-        return new Response(
-                this.conditionRepository.save(new Condition("transaction")).getConditionId().getId()
-        );
     }
 }
