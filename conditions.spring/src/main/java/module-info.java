@@ -1,5 +1,6 @@
 open module conditions.spring {
     requires conditions.core;
+    requires conditions.iam;
 
     requires spring.context;
     requires spring.boot.autoconfigure;

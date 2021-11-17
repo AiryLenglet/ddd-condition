@@ -11,6 +11,7 @@
     <modules>
         <module>conditions.core</module>
         <module>conditions.spring</module>
+        <module>conditions.iam</module>
     </modules>
 
     <properties>
@@ -28,6 +29,12 @@
             <dependency>
                 <groupId>me.lenglet</groupId>
                 <artifactId>conditions.core</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>me.lenglet</groupId>
+                <artifactId>conditions.iam</artifactId>
                 <version>${version}</version>
             </dependency>
 
@@ -74,6 +81,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-java8</artifactId>
+            <version>5.0.1.Final</version>
         </dependency>
     </dependencies>
 

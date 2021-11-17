@@ -5,9 +5,7 @@ import conditions.core.event.EventBus;
 import conditions.core.model.Condition;
 import conditions.core.model.ConditionId;
 import conditions.core.repository.ConditionRepository;
-import org.springframework.stereotype.Service;
 
-@Service
 public class ConditionRepositoryImpl implements ConditionRepository {
 
     private final SpringConditionRepository springConditionRepository;
