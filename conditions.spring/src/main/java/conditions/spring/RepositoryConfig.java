@@ -1,6 +1,7 @@
 package conditions.spring;
 
 import conditions.core.event.EventBus;
+import conditions.core.model.Pid;
 import conditions.core.repository.ConditionRepository;
 import conditions.iam.model.User;
 import conditions.iam.repository.IamConditionRepository;
@@ -35,7 +36,7 @@ public class RepositoryConfig {
         return new RequestCachedUserRepository(
                 new UserRepository() {
                     @Override
-                    public User findById(String id) {
+                    public User findById(Pid aPid) {
                         return new User() {
                             @Override
                             public boolean isApprover() {

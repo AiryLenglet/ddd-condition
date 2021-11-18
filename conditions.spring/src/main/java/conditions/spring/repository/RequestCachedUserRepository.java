@@ -1,5 +1,6 @@
 package conditions.spring.repository;
 
+import conditions.core.model.Pid;
 import conditions.iam.model.User;
 import conditions.iam.repository.UserRepository;
 import org.springframework.cache.annotation.Cacheable;
@@ -16,7 +17,7 @@ public class RequestCachedUserRepository implements UserRepository {
 
     @Cacheable(cacheManager = "requestScopedCacheManager", cacheNames = "default")
     @Override
-    public User findById(String id) {
-        return this.userRepository.findById(id);
+    public User findById(Pid aPid) {
+        return this.userRepository.findById(aPid);
     }
 }

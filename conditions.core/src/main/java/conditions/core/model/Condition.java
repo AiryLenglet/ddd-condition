@@ -9,10 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 
 @Slf4j
 @Entity
@@ -25,7 +22,9 @@ public class Condition extends Aggregate {
     @Enumerated(EnumType.STRING)
     private Status status = Status.DRAFT;
     private String type;
-    private String owner;
+    @Embedded
+    @AttributeOverride(name = "pid.value", column = @Column(name = "owner"))
+    private Owner owner;
     private boolean fulfillmentReviewRequired = true;
     private boolean isRecurring = false;
     private boolean isInEdition = false;
@@ -46,7 +45,7 @@ public class Condition extends Aggregate {
         return type;
     }
 
-    public String getOwner() {
+    public Owner getOwner() {
         return owner;
     }
 
@@ -58,15 +57,15 @@ public class Condition extends Aggregate {
         return isRecurring;
     }
 
-    public void changeOwner(String owner) {
+    public void changeOwner(String aPid) {
         if (!isInEdition) {
             throw new IllegalArgumentException();
         }
-        log.info("Changing owner in condition {} to {}", this.conditionId, owner);
+        log.info("Changing owner in condition {} to {}", this.conditionId, aPid);
         if (this.status == Status.PENDING) {
-            this.addEvent(new OwnerChangedEvent(this.owner, owner));
+            this.addEvent(new OwnerChangedEvent(this.owner.getPid().getValue(), aPid));
         }
-        this.owner = owner;
+        this.owner = new Owner(new Pid(aPid));
     }
 
     public void retire() {

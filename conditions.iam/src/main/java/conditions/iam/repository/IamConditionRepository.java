@@ -19,7 +19,7 @@ public class IamConditionRepository implements ConditionRepository {
 
     @Override
     public void save(Condition condition) {
-        final var user = this.userRepository.findById(condition.getOwner());
+        final var user = this.userRepository.findById(condition.getOwner().getPid());
         if (!user.isApprover()) {
             throw new IllegalArgumentException("owner must be approver");
         }
