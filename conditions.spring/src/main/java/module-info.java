@@ -11,5 +11,6 @@ open module conditions.spring {
 
     requires lombok;
     requires spring.data.jpa;
+    requires java.persistence;
 
 }

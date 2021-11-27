@@ -7,6 +7,10 @@ public class Pid {
 
     private final String value;
 
+    private Pid() {
+        this.value = null;
+    }
+
     public Pid(String value) {
         if(!isValid(value)) {
             throw new IllegalArgumentException("Invalid value '" + value + "'");

@@ -1,10 +1,12 @@
 package conditions.spring;
 
 import conditions.core.event.EventBus;
+import conditions.core.model.Country;
 import conditions.core.model.Pid;
 import conditions.core.repository.ConditionRepository;
 import conditions.iam.model.User;
 import conditions.iam.repository.IamConditionRepository;
+import conditions.iam.repository.UserProvider;
 import conditions.iam.repository.UserRepository;
 import conditions.spring.repository.ConditionRepositoryImpl;
 import conditions.spring.repository.RequestCachedUserRepository;
@@ -24,11 +26,19 @@ public class RepositoryConfig {
     public ConditionRepository conditionRepository(
             SpringConditionRepository springConditionRepository,
             EventBus eventBus,
-            UserRepository userRepository
+            UserRepository userRepository,
+            UserProvider userProvider
     ) {
         return new IamConditionRepository(
                 new ConditionRepositoryImpl(springConditionRepository, eventBus),
-                userRepository);
+                userRepository,
+                userProvider
+        );
+    }
+
+    @Bean
+    public UserProvider mockUserProvider() {
+        return () -> new Pid("123456");
     }
 
     @Bean
@@ -40,6 +50,16 @@ public class RepositoryConfig {
                         return new User() {
                             @Override
                             public boolean isApprover() {
+                                return true;
+                            }
+
+                            @Override
+                            public Country location() {
+                                return null;
+                            }
+
+                            @Override
+                            public boolean hasBookingCenter(Country country) {
                                 return false;
                             }
                         };

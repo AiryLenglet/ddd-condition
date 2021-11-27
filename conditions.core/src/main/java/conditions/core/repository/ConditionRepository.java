@@ -7,4 +7,6 @@ public interface ConditionRepository {
     void save(Condition condition);
 
     Condition findById(ConditionId id);
+
+    Iterable<Condition> findAll(Specification<Condition> specification);
 }

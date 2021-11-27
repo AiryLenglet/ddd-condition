@@ -1,5 +1,6 @@
 package conditions.core.model;
 
+import conditions.common.util.Validate;
 import conditions.core.event.condition.ConditionClosedEvent;
 import conditions.core.event.condition.ConditionOpenedEvent;
 import conditions.core.event.condition.ConditionSubmittedEvent;
@@ -27,7 +28,9 @@ public class Condition extends Aggregate {
     private Owner owner;
     private boolean fulfillmentReviewRequired = true;
     private boolean isRecurring = false;
-    private boolean isInEdition = false;
+    private boolean isInEdition = true;
+    @Embedded
+    private Country bookingLocation;
 
     Condition() {
         //package-private for hibernate
@@ -127,6 +130,10 @@ public class Condition extends Aggregate {
             throw new IllegalArgumentException();
         }
         log.info("Opening condition {}", this.conditionId);
+
+        Validate.notNull(this.owner, () -> new IllegalArgumentException("Owner cannot be null"));
+        Validate.notNull(this.bookingLocation, () -> new IllegalArgumentException("Booking location cannot be null"));
+
         this.isInEdition = false;
         this.status = Status.OPEN;
         this.addEvent(new ConditionOpenedEvent(this.conditionId));
