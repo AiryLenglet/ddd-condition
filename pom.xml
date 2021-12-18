@@ -13,6 +13,8 @@
         <module>conditions.spring</module>
         <module>conditions.iam</module>
         <module>conditions.common</module>
+        <module>conditions.bat</module>
+        <module>conditions.context</module>
     </modules>
 
     <properties>
@@ -42,6 +44,18 @@
             <dependency>
                 <groupId>me.lenglet</groupId>
                 <artifactId>conditions.iam</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>me.lenglet</groupId>
+                <artifactId>conditions.bat</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>me.lenglet</groupId>
+                <artifactId>conditions.context</artifactId>
                 <version>${version}</version>
             </dependency>
 

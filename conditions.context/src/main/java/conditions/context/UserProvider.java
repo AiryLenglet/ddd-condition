@@ -1,4 +1,4 @@
-package conditions.iam.repository;
+package conditions.context;
 
 import conditions.core.model.Pid;
 

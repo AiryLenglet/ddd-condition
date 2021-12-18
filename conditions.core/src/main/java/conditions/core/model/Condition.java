@@ -66,7 +66,7 @@ public class Condition extends Aggregate {
         }
         log.info("Changing owner in condition {} to {}", this.conditionId, aPid);
         if (this.status == Status.PENDING) {
-            this.addEvent(new OwnerChangedEvent(this.owner.getPid().getValue(), aPid));
+            this.addEvent(new OwnerChangedEvent(this.owner.getPid().getValue(), aPid, this.conditionId));
         }
         this.owner = new Owner(new Pid(aPid));
     }

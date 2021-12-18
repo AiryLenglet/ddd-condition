@@ -1,5 +1,6 @@
 package conditions.iam.repository;
 
+import conditions.context.UserProvider;
 import conditions.core.model.Condition;
 import conditions.core.model.ConditionId;
 import conditions.core.model.Country;
@@ -31,9 +32,11 @@ public class IamConditionRepository implements ConditionRepository {
 
     @Override
     public void save(Condition condition) {
-        final var owner = this.userRepository.findById(condition.getOwner().getPid());
-        if (!owner.isApprover()) {
-            throw new IllegalArgumentException("owner must be approver");
+        if (condition.getOwner() != null) {
+            final var owner = this.userRepository.findById(condition.getOwner().getPid());
+            if (!owner.isApprover()) {
+                throw new IllegalArgumentException("owner must be approver");
+            }
         }
         this.conditionRepository.save(condition);
     }

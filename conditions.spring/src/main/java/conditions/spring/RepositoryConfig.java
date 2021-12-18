@@ -1,16 +1,18 @@
 package conditions.spring;
 
+import conditions.business_audit_trail.repository.BusinessAuditTrailConditionRepository;
+import conditions.context.UserProvider;
 import conditions.core.event.EventBus;
 import conditions.core.model.Country;
 import conditions.core.model.Pid;
 import conditions.core.repository.ConditionRepository;
 import conditions.iam.model.User;
 import conditions.iam.repository.IamConditionRepository;
-import conditions.iam.repository.UserProvider;
 import conditions.iam.repository.UserRepository;
 import conditions.spring.repository.ConditionRepositoryImpl;
 import conditions.spring.repository.RequestCachedUserRepository;
 import conditions.spring.repository.SpringConditionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +21,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.web.context.WebApplicationContext;
 
+@Slf4j
 @Configuration
 public class RepositoryConfig {
 
@@ -27,10 +30,14 @@ public class RepositoryConfig {
             SpringConditionRepository springConditionRepository,
             EventBus eventBus,
             UserRepository userRepository,
-            UserProvider userProvider
+            UserProvider userProvider,
+            BusinessAuditTrailConditionRepository.BusinessAuditTrail businessAuditTrail
     ) {
         return new IamConditionRepository(
-                new ConditionRepositoryImpl(springConditionRepository, eventBus),
+                new BusinessAuditTrailConditionRepository(
+                        new ConditionRepositoryImpl(springConditionRepository, eventBus),
+                        businessAuditTrail,
+                        userProvider),
                 userRepository,
                 userProvider
         );
