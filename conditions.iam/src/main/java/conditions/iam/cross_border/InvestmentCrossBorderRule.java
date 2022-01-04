@@ -2,7 +2,7 @@ package conditions.iam.cross_border;
 
 import conditions.core.model.Country;
 
-import java.util.Set;
+import java.util.LinkedList;
 
 public class InvestmentCrossBorderRule {
 
@@ -10,9 +10,19 @@ public class InvestmentCrossBorderRule {
     }
 
     public static Iterable<Country> canNotSee(Country aCountry) {
+        final var excludedCountries = new LinkedList<Country>();
         if ("RU".equals(aCountry.getCode())) {
-            return Set.of(new Country("SA"));
+            excludedCountries.add(new Country("SA"));
         }
-        return Set.of();
+
+        if (!"CH".equals(aCountry.getCode()) && !"FR".equals(aCountry.getCode())) {
+            excludedCountries.add(new Country("FR"));
+        }
+
+        if (!"BE".equals(aCountry.getCode())) {
+            excludedCountries.add(new Country("BE"));
+        }
+
+        return excludedCountries;
     }
 }
