@@ -6,6 +6,7 @@ import conditions.core.model.ConditionId;
 import conditions.core.model.Country;
 import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.Specification;
+import conditions.iam.cross_border.AssetManagementCrossBorderRule;
 import conditions.iam.cross_border.InvestmentCrossBorderRule;
 import conditions.iam.model.User;
 
@@ -54,7 +55,8 @@ public class IamConditionRepository implements ConditionRepository {
 
     private Specification<Condition> crossBorder(Country userLocation) {
         return hasNoBookingLocation()
-                .or(investmentCrossBorder(userLocation));
+                .or(investmentCrossBorder(userLocation))
+                .or(assetManagementCrossBorder(userLocation));
     }
 
     private Specification<Condition> investmentCrossBorder(Country userLocation) {
@@ -62,7 +64,16 @@ public class IamConditionRepository implements ConditionRepository {
                 .and(not((root, query, criteriaBuilder) -> bookingLocationPath(root).in(InvestmentCrossBorderRule.canNotSee(userLocation))));
     }
 
+    private Specification<Condition> assetManagementCrossBorder(Country userLocation) {
+        return isAssetManagement()
+                .and((root, query, criteriaBuilder) -> bookingLocationPath(root).in(AssetManagementCrossBorderRule.canSee(userLocation)));
+    }
+
     private Specification<Condition> isInvestment() {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.isTrue(root.get("isRecurring")); //todo: change impl
+    }
+
+    private Specification<Condition> isAssetManagement() {
         return (root, query, criteriaBuilder) -> criteriaBuilder.isTrue(root.get("isRecurring")); //todo: change impl
     }
 
