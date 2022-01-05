@@ -50,7 +50,7 @@ public class IamConditionRepository implements ConditionRepository {
     @Override
     public Iterable<Condition> findAll(Specification<Condition> specification) {
         final User user = this.userRepository.findById(this.userProvider.currentUser());
-        return findAll(specification.and(crossBorder(user.location())));
+        return this.conditionRepository.findAll(specification.and(crossBorder(user.location())));
     }
 
     private Specification<Condition> crossBorder(Country userLocation) {
