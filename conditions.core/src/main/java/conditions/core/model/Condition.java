@@ -52,6 +52,10 @@ public class Condition extends Aggregate {
         return owner;
     }
 
+    public Country getBookingLocation() {
+        return bookingLocation;
+    }
+
     public Fulfillment startNewFulfillment() {
         return new Fulfillment(this.conditionId, this.fulfillmentReviewRequired);
     }

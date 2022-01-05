@@ -10,8 +10,10 @@ import conditions.iam.cross_border.AssetManagementCrossBorderRule;
 import conditions.iam.cross_border.InvestmentCrossBorderRule;
 import conditions.iam.model.User;
 
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
+import java.util.stream.StreamSupport;
 
 import static conditions.core.repository.Specification.not;
 
@@ -33,6 +35,12 @@ public class IamConditionRepository implements ConditionRepository {
 
     @Override
     public void save(Condition condition) {
+        final User user = this.userRepository.findById(this.userProvider.currentUser());
+
+        if (!this.canSeeCondition(user, condition)) {
+            throw new EntityNotFoundException();
+        }
+
         if (condition.getOwner() != null) {
             final var owner = this.userRepository.findById(condition.getOwner().getPid());
             if (!owner.isApprover()) {
@@ -44,7 +52,14 @@ public class IamConditionRepository implements ConditionRepository {
 
     @Override
     public Condition findById(ConditionId id) {
-        return this.conditionRepository.findById(id);
+        final User user = this.userRepository.findById(this.userProvider.currentUser());
+        final var result = this.conditionRepository.findById(id);
+
+        if (!this.canSeeCondition(user, result)) {
+            throw new EntityNotFoundException();
+        }
+
+        return result;
     }
 
     @Override
@@ -83,5 +98,20 @@ public class IamConditionRepository implements ConditionRepository {
 
     private Path<Object> bookingLocationPath(Root<Condition> root) {
         return root.get("bookingLocation.code");
+    }
+
+    private boolean canSeeCondition(User aUser, Condition aCondition) {
+        if (aCondition.getBookingLocation() != null) {
+            //todo: change impl
+            final var forbiddenCountries = InvestmentCrossBorderRule.canNotSee(aUser.location());
+            if (StreamSupport.stream(forbiddenCountries.spliterator(), false).anyMatch(c -> aCondition.getBookingLocation().equals(c))) {
+                return false;
+            }
+            final var allowedCountries = AssetManagementCrossBorderRule.canSee(aUser.location());
+            if (StreamSupport.stream(allowedCountries.spliterator(), false).noneMatch(c -> aCondition.getBookingLocation().equals(c))) {
+                return false;
+            }
+        }
+        return true;
     }
 }
