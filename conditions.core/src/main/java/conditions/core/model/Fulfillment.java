@@ -1,6 +1,9 @@
 package conditions.core.model;
 
-import conditions.core.event.fulfillment.*;
+import conditions.core.event.fulfillment.FulfillmentCancelledEvent;
+import conditions.core.event.fulfillment.FulfillmentFinishedEvent;
+import conditions.core.event.fulfillment.FulfillmentOpenedEvent;
+import conditions.core.event.fulfillment.FulfillmentReviewAskedForChange;
 
 import javax.persistence.*;
 
@@ -40,39 +43,6 @@ public class Fulfillment extends Aggregate {
 
     public FulfillmentId getFulfillmentId() {
         return fulfillmentId;
-    }
-
-    public void fulfill(String comment) {
-        if (this.status != Status.FULFILLMENT) {
-            throw new IllegalArgumentException();
-        }
-        this.status = Status.VERIFICATION;
-        this.addEvent(new ConditionFulfilledEvent());
-    }
-
-    public void verify(Fulfillment.FulfillmentVerification fulfillmentVerification, String comment) {
-        if (this.status != Status.VERIFICATION) {
-            throw new IllegalArgumentException();
-        }
-
-        if (fulfillmentVerification == Fulfillment.FulfillmentVerification.CHANGE_REQUEST && comment == null) {
-            throw new IllegalArgumentException();
-        }
-
-        this.fulfillmentVerificationComment = comment;
-        this.fulfillmentVerification = fulfillmentVerification;
-
-        if (fulfillmentVerification == Fulfillment.FulfillmentVerification.CHANGE_REQUEST) {
-            this.status = Status.FULFILLMENT;
-            this.addEvent(new FulfillmentVerificationAskedForChange());
-        } else if (fulfillmentVerification == Fulfillment.FulfillmentVerification.APPROVE) {
-            if (this.fulfillmentReviewRequired) {
-                this.status = Status.REVIEW;
-                //this.addEvent();
-            } else {
-                this.finished();
-            }
-        }
     }
 
     public void review(Fulfillment.FulfillmentReview fulfillmentReview, String comment) {
