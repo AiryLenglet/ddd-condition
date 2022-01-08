@@ -1,33 +1,23 @@
 package conditions.spring.controller;
 
-import conditions.core.model.ConditionId;
-import conditions.core.model.FulfillmentTask;
-import conditions.core.model.TaskId;
+import conditions.core.model.*;
 import conditions.core.repository.TaskRepository;
-import conditions.core.use_case.ApproveConditionUseCase;
-import conditions.core.use_case.CreateConditionUseCase;
-import conditions.core.use_case.Request;
-import conditions.core.use_case.SubmitConditionUseCase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
 public class Controller {
 
     @Autowired
-    private CreateConditionUseCase createConditionUseCase;
-    @Autowired
-    private SubmitConditionUseCase submitConditionUseCase;
-    @Autowired
-    private ApproveConditionUseCase approveConditionUseCase;
-    @Autowired
     private TaskRepository taskRepository;
 
     @GetMapping
     void test() {
-        final var task = new FulfillmentTask(new ConditionId(), null);
+        final var task = new FulfillmentTask(new ConditionId(), new FulfillmentId(), new Pid("123456"));
         this.taskRepository.save(task);
         log.info("{}", task.getTaskId());
     }
@@ -40,30 +30,5 @@ public class Controller {
         task.updateComment("everything is alright");
         task.submit();
         this.taskRepository.save(task);
-    }
-
-    @PostMapping
-    public CreateConditionUseCase.Response create() {
-        return this.createConditionUseCase.execute();
-    }
-
-    @PostMapping(path = "/{id}/submit")
-    public void submit(
-            @PathVariable("id") String id
-    ) {
-        this.submitConditionUseCase.execute(new Request(id));
-    }
-
-    @PostMapping(path = "/{id}/approve")
-    public void approve(
-            @PathVariable("id") String id,
-            @RequestBody ApproveConditionUseCase.Request body
-    ) {
-        this.approveConditionUseCase.execute(id, body);
-    }
-
-    @PutMapping(path = "/{id}")
-    public void open(@PathVariable("id") String id) {
-        this.submitConditionUseCase.execute(new Request(id));
     }
 }

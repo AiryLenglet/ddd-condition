@@ -1,11 +1,13 @@
 package conditions.core.event.approval;
 
+import conditions.core.event.Event;
 import conditions.core.model.ConditionId;
-import conditions.core.model.draft.ApprovalStepId;
+import conditions.core.model.FulfillmentId;
+import conditions.core.model.TaskId;
 
-public class ConditionRejectedEvent extends ApprovalEvent {
-
-    public ConditionRejectedEvent(ConditionId conditionId, ApprovalStepId approvalStepId) {
-        super(conditionId, approvalStepId);
-    }
+public record ConditionRejectedEvent(
+        ConditionId conditionId,
+        FulfillmentId fulfillmentId,
+        TaskId taskId
+) implements Event {
 }

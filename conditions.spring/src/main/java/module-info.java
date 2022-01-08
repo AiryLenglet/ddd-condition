@@ -13,6 +13,7 @@ open module conditions.spring {
 
     requires lombok;
     requires spring.data.jpa;
+    requires spring.data.envers;
     requires java.persistence;
 
 }

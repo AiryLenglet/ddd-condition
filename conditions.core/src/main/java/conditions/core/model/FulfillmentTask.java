@@ -1,19 +1,26 @@
 package conditions.core.model;
 
 import conditions.core.event.fulfillment.ConditionFulfilledEvent;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
+@Audited
 @Entity
 @DiscriminatorValue(value = "FULFILLMENT")
-public class FulfillmentTask extends Task<FulfillmentTask.Decision> {
+public class FulfillmentTask extends NoDecisionTask {
 
     public FulfillmentTask(
             ConditionId conditionId,
-            TaskId previousTaskId
+            FulfillmentId fulfillmentId,
+            Pid assignee
     ) {
-        super(conditionId, previousTaskId);
+        super(
+                conditionId,
+                fulfillmentId,
+                assignee
+        );
     }
 
     FulfillmentTask() {
@@ -29,7 +36,4 @@ public class FulfillmentTask extends Task<FulfillmentTask.Decision> {
         super.submit();
     }
 
-    public enum Decision {
-
-    }
 }

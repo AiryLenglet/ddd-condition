@@ -4,6 +4,7 @@ module conditions.core {
     requires lombok;
     requires java.transaction;
     requires java.persistence;
+    requires org.hibernate.orm.envers;
 
     requires org.slf4j;
 
@@ -20,7 +21,5 @@ module conditions.core {
     exports conditions.core.event.fulfillment;
     exports conditions.core.event.approval;
 
-    exports conditions.core.model.draft;
     opens conditions.core.model.draft;
-
 }

@@ -16,7 +16,7 @@ public class ConditionAcceptedEventHandler implements EventBus.Handler<Condition
 
     @Override
     public void handle(ConditionAcceptedEvent event) {
-        final var condition = this.conditionRepository.findById(event.getConditionId());
+        final var condition = this.conditionRepository.findById(event.conditionId());
         condition.open();
         this.conditionRepository.save(condition);
     }

@@ -3,17 +3,16 @@ package conditions.spring.event_bus;
 import conditions.core.event.EventBus;
 import conditions.core.event.approval.AskedChangeEvent;
 import conditions.core.event.approval.ConditionAcceptedEvent;
-import conditions.core.event.approval.ConditionRejectedEvent;
 import conditions.core.event.condition.ConditionOpenedEvent;
-import conditions.core.event.condition.ConditionSubmittedEvent;
 import conditions.core.event.fulfillment.ConditionFulfilledEvent;
 import conditions.core.event.fulfillment.FulfillmentOpenedEvent;
-import conditions.core.event_handler.*;
-import conditions.core.factory.JavaClock;
-import conditions.core.repository.ApprovalStepRepository;
+import conditions.core.event_handler.AskedChangeEventHandler;
+import conditions.core.event_handler.ConditionAcceptedEventHandler;
+import conditions.core.event_handler.ConditionOpenedEventHandler;
+import conditions.core.event_handler.FulfillmentOpenedEventHandler;
 import conditions.core.repository.ConditionRepository;
-import conditions.core.repository.EscalationStepRepository;
 import conditions.core.repository.FulfillmentRepository;
+import conditions.core.repository.TaskRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -29,24 +28,21 @@ public class EventSubscriptionConfig implements ApplicationListener<ApplicationR
     @Autowired
     private FulfillmentRepository fulfillmentRepository;
     @Autowired
-    private EscalationStepRepository escalationStepRepository;
-    @Autowired
-    private ApprovalStepRepository approvalStepRepository;
+    private TaskRepository taskRepository;
 
     @Autowired
     private EventBus eventBus;
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-        this.eventBus.subscribeForAfterCommit(ConditionOpenedEvent.class, event -> {
-            throw new RuntimeException("cannot notify HRT-API");
-        });
 
-        this.eventBus.subscribe(ConditionRejectedEvent.class, new ConditionRejectedEventHandler(this.escalationStepRepository));
-        this.eventBus.subscribe(ConditionSubmittedEvent.class, new ConditionSubmittedEventHandler(approvalStepRepository, new JavaClock()));
+        /* APPROVAL */
         this.eventBus.subscribe(ConditionAcceptedEvent.class, new ConditionAcceptedEventHandler(conditionRepository));
         this.eventBus.subscribe(ConditionOpenedEvent.class, new ConditionOpenedEventHandler(conditionRepository, fulfillmentRepository));
-        this.eventBus.subscribe(AskedChangeEvent.class, new AskedChangeEventHandler(conditionRepository));
+        this.eventBus.subscribe(AskedChangeEvent.class, new AskedChangeEventHandler(conditionRepository, this.taskRepository));
+
+        /* FULFILLMENT */
+        this.eventBus.subscribe(FulfillmentOpenedEvent.class, new FulfillmentOpenedEventHandler(conditionRepository, this.taskRepository));
 
         //notifications
         this.eventBus.subscribeForAfterCommit(FulfillmentOpenedEvent.class, e -> log.info("Notifying owner he has to fulfill"));
