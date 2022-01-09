@@ -8,4 +8,6 @@ public interface TaskRepository {
 
     Task<?> findById(TaskId id);
 
+    Iterable<Task<?>> findAll(Specification<Task> specification);
+
 }

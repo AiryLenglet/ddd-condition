@@ -1,8 +1,8 @@
 package conditions.core.model;
 
 import conditions.common.util.Validate;
-import conditions.core.event.fulfillment.FulfillmentReviewedEvent;
-import conditions.core.event.fulfillment.FulfillmentVerificationAskedForChangeEvent;
+import conditions.core.event.fulfillment.FulfillmentReviewAskedForChangeEvent;
+import conditions.core.event.fulfillment.FulfillmentVerifiedEvent;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.DiscriminatorValue;
@@ -10,10 +10,10 @@ import javax.persistence.Entity;
 
 @Audited
 @Entity
-@DiscriminatorValue(value = "VERIFICATION")
-public class VerificationTask extends Task<VerificationTask.Decision> {
+@DiscriminatorValue(value = "REVIEW")
+public class ReviewTask extends Task<ReviewTask.Decision> {
 
-    public VerificationTask(
+    public ReviewTask(
             ConditionId conditionId,
             FulfillmentId fulfillmentId,
             Pid assignee,
@@ -27,7 +27,7 @@ public class VerificationTask extends Task<VerificationTask.Decision> {
         );
     }
 
-    VerificationTask() {
+    ReviewTask() {
         super();
     }
 
@@ -39,8 +39,8 @@ public class VerificationTask extends Task<VerificationTask.Decision> {
         }
 
         this.addEvent(this.outcome == Decision.ACCEPT ?
-                new FulfillmentReviewedEvent(this.conditionId, this.fulfillmentId, this.taskId) :
-                new FulfillmentVerificationAskedForChangeEvent(this.conditionId, this.fulfillmentId, this.taskId));
+                new FulfillmentVerifiedEvent(this.conditionId, this.fulfillmentId, this.taskId) :
+                new FulfillmentReviewAskedForChangeEvent(this.conditionId, this.fulfillmentId, this.taskId));
 
         super.submit();
     }

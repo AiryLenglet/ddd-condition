@@ -1,9 +1,7 @@
 package conditions.core.model;
 
 import conditions.common.util.Validate;
-import conditions.core.event.condition.ConditionClosedEvent;
-import conditions.core.event.condition.ConditionOpenedEvent;
-import conditions.core.event.condition.OwnerChangedEvent;
+import conditions.core.event.condition.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -94,6 +92,7 @@ public class Condition extends Aggregate {
         }
         log.info("Cancelling condition {}", this.conditionId);
         this.status = Status.CANCELLED;
+        this.addEvent(new ConditionCancelledEvent(this.conditionId));
     }
 
     public void discard() {
@@ -102,6 +101,7 @@ public class Condition extends Aggregate {
         }
         log.info("Discarding condition {}", this.conditionId);
         this.status = Status.DISCARDED;
+        this.addEvent(new ConditionDiscardedEvent(this.conditionId));
     }
 
     /*

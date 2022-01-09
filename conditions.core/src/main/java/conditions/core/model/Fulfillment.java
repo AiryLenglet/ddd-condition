@@ -39,15 +39,18 @@ public class Fulfillment extends Aggregate {
         return fulfillmentId;
     }
 
+    public boolean isFulfillmentReviewRequired() {
+        return fulfillmentReviewRequired;
+    }
 
     public void cancel() {
         this.status = Status.CANCELLED;
-        this.addEvent(new FulfillmentCancelledEvent(this.fulfillmentId, this.conditionId));
+        this.addEvent(new FulfillmentCancelledEvent(this.conditionId, this.fulfillmentId));
     }
 
     public void finished() {
         this.status = Status.DONE;
-        this.addEvent(new FulfillmentFinishedEvent(this.fulfillmentId, this.conditionId));
+        this.addEvent(new FulfillmentFinishedEvent(this.conditionId, this.fulfillmentId));
     }
 
     enum Status {

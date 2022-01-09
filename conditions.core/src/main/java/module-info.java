@@ -20,6 +20,4 @@ module conditions.core {
     exports conditions.core.event.condition; // ?
     exports conditions.core.event.fulfillment;
     exports conditions.core.event.approval;
-
-    opens conditions.core.model.draft;
 }

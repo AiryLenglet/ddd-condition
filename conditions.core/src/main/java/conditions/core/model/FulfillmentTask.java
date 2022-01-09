@@ -23,6 +23,20 @@ public class FulfillmentTask extends NoDecisionTask {
         );
     }
 
+    public FulfillmentTask(
+            ConditionId conditionId,
+            FulfillmentId fulfillmentId,
+            Pid assignee,
+            TaskId previousTaskId
+    ) {
+        super(
+                conditionId,
+                fulfillmentId,
+                assignee,
+                previousTaskId
+        );
+    }
+
     FulfillmentTask() {
         super();
     }
