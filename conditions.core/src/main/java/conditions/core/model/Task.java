@@ -28,6 +28,8 @@ public abstract class Task<E extends Enum<E>> extends Aggregate {
     @Embedded
     @AttributeOverride(name = "pid.value", column = @Column(name = "assignee"))
     protected Pid assignee;
+    @Version
+    private Long version;
 
     Task() {
         //package-private for hibernate
