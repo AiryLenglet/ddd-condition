@@ -1,10 +1,9 @@
-package conditions.spring.event_bus;
+package conditions.spring;
 
 import conditions.core.event.EventBus;
 import conditions.core.event.approval.AskedChangeEvent;
 import conditions.core.event.approval.ConditionAcceptedEvent;
 import conditions.core.event.condition.ConditionOpenedEvent;
-import conditions.core.event.fulfillment.ConditionFulfilledEvent;
 import conditions.core.event.fulfillment.FulfillmentOpenedEvent;
 import conditions.core.event_handler.AskedChangeEventHandler;
 import conditions.core.event_handler.ConditionAcceptedEventHandler;
@@ -21,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class EventSubscriptionConfig implements ApplicationListener<ApplicationReadyEvent> {
+public class ConditionWorkflowConfig implements ApplicationListener<ApplicationReadyEvent> {
 
     @Autowired
     private ConditionRepository conditionRepository;
@@ -43,9 +42,5 @@ public class EventSubscriptionConfig implements ApplicationListener<ApplicationR
 
         /* FULFILLMENT */
         this.eventBus.subscribe(FulfillmentOpenedEvent.class, new FulfillmentOpenedEventHandler(conditionRepository, this.taskRepository));
-
-        //notifications
-        this.eventBus.subscribeForAfterCommit(FulfillmentOpenedEvent.class, e -> log.info("Notifying owner he has to fulfill"));
-        this.eventBus.subscribeForAfterCommit(ConditionFulfilledEvent.class, e -> log.info("Notifying supervisor he has to verify"));
     }
 }
