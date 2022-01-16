@@ -13,6 +13,7 @@ import conditions.iam.model.User;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static conditions.core.repository.Specification.not;
@@ -63,7 +64,7 @@ public class IamConditionRepository implements ConditionRepository {
     }
 
     @Override
-    public Iterable<Condition> findAll(Specification<Condition> specification) {
+    public Stream<Condition> findAll(Specification<Condition> specification) {
         final User user = this.userRepository.findById(this.userProvider.currentUser());
         return this.conditionRepository.findAll(specification.and(crossBorder(user.location())));
     }

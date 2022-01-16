@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.stream.Stream;
 
 @Service
 public class FulfillmentRepositoryImpl implements FulfillmentRepository {
@@ -45,13 +46,13 @@ public class FulfillmentRepositoryImpl implements FulfillmentRepository {
     }
 
     @Override
-    public Iterable<Fulfillment> findAll(Specification<Fulfillment> specification) {
+    public Stream<Fulfillment> findAll(Specification<Fulfillment> specification) {
         final var criteriaBuilder = this.entityManager.getCriteriaBuilder();
         final CriteriaQuery<Fulfillment> query = criteriaBuilder.createQuery(Fulfillment.class);
         final Root<Fulfillment> root = query.from(Fulfillment.class);
 
         query.where(specification.toPredicate(root, query, criteriaBuilder));
 
-        return this.entityManager.createQuery(query).getResultList();
+        return this.entityManager.createQuery(query).getResultList().stream();
     }
 }

@@ -10,6 +10,7 @@ import conditions.core.repository.Specification;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.stream.Stream;
 
 public class ConditionRepositoryImpl implements ConditionRepository {
 
@@ -41,13 +42,13 @@ public class ConditionRepositoryImpl implements ConditionRepository {
     }
 
     @Override
-    public Iterable<Condition> findAll(Specification<Condition> specification) {
+    public Stream<Condition> findAll(Specification<Condition> specification) {
         final var criteriaBuilder = this.entityManager.getCriteriaBuilder();
         final CriteriaQuery<Condition> query = criteriaBuilder.createQuery(Condition.class);
         final Root<Condition> root = query.from(Condition.class);
 
         query.where(specification.toPredicate(root, query, criteriaBuilder));
 
-        return this.entityManager.createQuery(query).getResultList();
+        return this.entityManager.createQuery(query).getResultList().stream();
     }
 }

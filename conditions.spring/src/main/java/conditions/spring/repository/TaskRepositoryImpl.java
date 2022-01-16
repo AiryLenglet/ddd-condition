@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.stream.Stream;
 
 @Service
 public class TaskRepositoryImpl implements TaskRepository {
@@ -45,13 +46,13 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public Iterable<Task> findAll(Specification<Task> specification) {
+    public Stream<Task> findAll(Specification<Task> specification) {
         final var criteriaBuilder = this.entityManager.getCriteriaBuilder();
         final CriteriaQuery<Task> query = criteriaBuilder.createQuery(Task.class);
         final Root<Task> root = query.from(Task.class);
 
         query.where(specification.toPredicate(root, query, criteriaBuilder));
 
-        return this.entityManager.createQuery(query).getResultList();
+        return this.entityManager.createQuery(query).getResultList().stream();
     }
 }

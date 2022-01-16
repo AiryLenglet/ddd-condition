@@ -8,6 +8,8 @@ import conditions.core.repository.Specification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.stream.Stream;
+
 public class BusinessAuditTrailConditionRepository implements ConditionRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BusinessAuditTrailConditionRepository.class);
@@ -42,7 +44,7 @@ public class BusinessAuditTrailConditionRepository implements ConditionRepositor
     }
 
     @Override
-    public Iterable<Condition> findAll(Specification<Condition> specification) {
+    public Stream<Condition> findAll(Specification<Condition> specification) {
         LOGGER.info("findAll with specifications {}", specification);
         return this.delegate.findAll(specification);
     }

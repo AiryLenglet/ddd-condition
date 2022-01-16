@@ -1,7 +1,10 @@
 package conditions.spring;
 
+import conditions.core.model.Condition;
 import conditions.core.repository.ConditionRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Stream;
 
 @Service
 public class DashboardService {
@@ -14,7 +17,7 @@ public class DashboardService {
         this.conditionRepository = conditionRepository;
     }
 
-    public Iterable getUserConditions() {
+    public Stream<Condition> getUserConditions() {
         return this.conditionRepository.findAll((root, query, criteriaBuilder) -> root.isNotNull());
     }
 }

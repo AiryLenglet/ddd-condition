@@ -15,7 +15,6 @@ import conditions.core.model.Task;
 import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.FulfillmentRepository;
 import conditions.core.repository.TaskRepository;
-import conditions.spring.controller.Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,22 +43,24 @@ public class ConditionWorkflowConfig implements ApplicationListener<ApplicationR
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
 
         /* CONDITION */
-        this.eventBus.subscribe(ConditionDiscardedEvent.class, event -> {
-            final var fulfillments = fulfillmentRepository.findAll((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("conditionId"), event.conditionId()));
-            for (final var fulfillment : fulfillments) {
-                fulfillment.cancel();
-                fulfillmentRepository.save(fulfillment);
-            }
-        });
+        this.eventBus.subscribe(
+                ConditionDiscardedEvent.class,
+                event -> fulfillmentRepository.findAll(FulfillmentRepository.Specifications.conditionId(event.conditionId()))
+                        .forEach(fulfillment -> {
+                            fulfillment.cancel();
+                            fulfillmentRepository.save(fulfillment);
+                        })
+        );
 
         /* FULFILLMENT */
-        this.eventBus.subscribe(FulfillmentCancelledEvent.class, event -> {
-            final var tasks = taskRepository.findAll((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("fulffilmentId"), event.fulfillmentId()));
-            for (final var task : tasks) {
-                task.cancel();
-                taskRepository.save(task);
-            }
-        });
+        this.eventBus.subscribe(
+                FulfillmentCancelledEvent.class,
+                event -> taskRepository.findAll(TaskRepository.Specifications.fulfillmentId(event.fulfillmentId()))
+                        .forEach(task -> {
+                            task.cancel();
+                            taskRepository.save(task);
+                        })
+        );
 
         /* APPROVAL */
         this.eventBus.subscribe(ConditionAcceptedEvent.class, new ConditionAcceptedEventHandler(conditionRepository));
