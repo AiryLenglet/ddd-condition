@@ -2,18 +2,15 @@ package conditions.core.model;
 
 import conditions.common.util.Validate;
 import conditions.core.event.condition.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 
-@Slf4j
 @Entity
-@Builder(access = AccessLevel.PACKAGE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Condition extends Aggregate {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Condition.class);
 
     @EmbeddedId
     private ConditionId conditionId = new ConditionId();
@@ -70,7 +67,7 @@ public class Condition extends Aggregate {
     public void changeOwner(String aPid) {
 
         //todo: block update when condition is OPEN, PENDING ?
-        log.info("Changing owner in condition {} to {}", this.conditionId, aPid);
+        LOGGER.info("Changing owner in condition {} to {}", this.conditionId, aPid);
         if (this.status == Status.PENDING) {
             this.addEvent(new OwnerChangedEvent(this.owner.getPid().getValue(), aPid, this.conditionId));
         }
@@ -81,7 +78,7 @@ public class Condition extends Aggregate {
         if (this.status != Status.OPEN) {
             throw new IllegalArgumentException();
         }
-        log.info("Retiring condition {}", this.conditionId);
+        LOGGER.info("Retiring condition {}", this.conditionId);
         this.status = Status.RETIRED;
         throw new RuntimeException("no event produced");
     }
@@ -90,7 +87,7 @@ public class Condition extends Aggregate {
         if (this.status != Status.PENDING) {
             throw new IllegalArgumentException();
         }
-        log.info("Cancelling condition {}", this.conditionId);
+        LOGGER.info("Cancelling condition {}", this.conditionId);
         this.status = Status.CANCELLED;
         this.addEvent(new ConditionCancelledEvent(this.conditionId));
     }
@@ -99,7 +96,7 @@ public class Condition extends Aggregate {
         if (this.status != Status.DRAFT) {
             throw new IllegalArgumentException();
         }
-        log.info("Discarding condition {}", this.conditionId);
+        LOGGER.info("Discarding condition {}", this.conditionId);
         this.status = Status.DISCARDED;
         this.addEvent(new ConditionDiscardedEvent(this.conditionId));
     }
@@ -111,7 +108,7 @@ public class Condition extends Aggregate {
         if (this.status != Status.OPEN) {
             throw new IllegalArgumentException();
         }
-        log.info("Closing condition {}", this.conditionId);
+        LOGGER.info("Closing condition {}", this.conditionId);
         this.status = Status.DONE;
         this.addEvent(new ConditionClosedEvent(this.conditionId));
     }
@@ -120,7 +117,7 @@ public class Condition extends Aggregate {
         if (this.status != Status.PENDING) {
             throw new IllegalArgumentException();
         }
-        log.info("Opening condition {}", this.conditionId);
+        LOGGER.info("Opening condition {}", this.conditionId);
 
         Validate.notNull(this.owner, () -> new IllegalArgumentException("Owner cannot be null"));
         Validate.notNull(this.bookingLocation, () -> new IllegalArgumentException("Booking location cannot be null"));

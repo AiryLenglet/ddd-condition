@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 @Audited
 @Entity
 @DiscriminatorValue(value = "FULFILLMENT")
-public class FulfillmentTask extends NoDecisionTask {
+public class FulfillmentTask extends Task {
 
     public FulfillmentTask(
             ConditionId conditionId,
@@ -47,7 +47,6 @@ public class FulfillmentTask extends NoDecisionTask {
             throw new IllegalArgumentException("provide com");
         }
         this.addEvent(new ConditionFulfilledEvent(this.conditionId, this.taskId));
-        super.submit();
     }
 
 }

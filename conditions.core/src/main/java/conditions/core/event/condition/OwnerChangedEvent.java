@@ -1,9 +1,7 @@
 package conditions.core.event.condition;
 
 import conditions.core.model.ConditionId;
-import lombok.ToString;
 
-@ToString
 public class OwnerChangedEvent extends ConditionEvent {
 
     private final String previousOwner;

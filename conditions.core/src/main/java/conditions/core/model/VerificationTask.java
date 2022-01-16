@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 @Audited
 @Entity
 @DiscriminatorValue(value = "VERIFICATION")
-public class VerificationTask extends Task<VerificationTask.Decision> {
+public class VerificationTask extends DecisionTask<VerificationTask.Decision> {
 
     public VerificationTask(
             ConditionId conditionId,

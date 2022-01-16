@@ -12,7 +12,8 @@ import conditions.iam.repository.UserRepository;
 import conditions.spring.repository.ConditionRepositoryImpl;
 import conditions.spring.repository.RequestCachedUserRepository;
 import conditions.spring.repository.SpringConditionRepository;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
@@ -21,9 +22,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.web.context.WebApplicationContext;
 
-@Slf4j
 @Configuration
 public class RepositoryConfig {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryConfig.class);
 
     @Bean
     public ConditionRepository conditionRepository(

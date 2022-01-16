@@ -12,7 +12,7 @@ import javax.persistence.Entity;
 @Audited
 @Entity
 @DiscriminatorValue(value = "APPROVAL")
-public class ApprovalTask extends Task<ApprovalTask.Decision> {
+public class ApprovalTask extends DecisionTask<ApprovalTask.Decision> {
 
     public ApprovalTask(
             ConditionId conditionId,

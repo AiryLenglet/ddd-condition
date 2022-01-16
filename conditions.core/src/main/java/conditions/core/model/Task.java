@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Audited
 @Entity
 @DiscriminatorColumn(name = "TYPE")
-public abstract class Task<E extends Enum<E>> extends Aggregate {
+public abstract class Task extends Aggregate {
 
     @EmbeddedId
     protected TaskId taskId;
@@ -23,8 +23,6 @@ public abstract class Task<E extends Enum<E>> extends Aggregate {
     @Enumerated(EnumType.STRING)
     protected Status status;
     protected String comment;
-    @Enumerated(EnumType.STRING)
-    protected E outcome;
     @Embedded
     @AttributeOverride(name = "pid.value", column = @Column(name = "assignee"))
     protected Pid assignee;
@@ -35,7 +33,7 @@ public abstract class Task<E extends Enum<E>> extends Aggregate {
         //package-private for hibernate
     }
 
-    public Task(
+    protected Task(
             ConditionId conditionId,
             FulfillmentId fulfillmentId,
             Pid assignee
@@ -47,7 +45,7 @@ public abstract class Task<E extends Enum<E>> extends Aggregate {
         this.taskId = new TaskId();
     }
 
-    public Task(
+    protected Task(
             ConditionId conditionId,
             FulfillmentId fulfillmentId,
             Pid assignee,

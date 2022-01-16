@@ -1,7 +1,6 @@
 module conditions.core {
     requires conditions.common;
 
-    requires lombok;
     requires java.transaction;
     requires java.persistence;
     requires org.hibernate.orm.envers;

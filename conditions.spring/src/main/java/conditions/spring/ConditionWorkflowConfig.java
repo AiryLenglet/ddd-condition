@@ -15,7 +15,9 @@ import conditions.core.model.Task;
 import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.FulfillmentRepository;
 import conditions.core.repository.TaskRepository;
-import lombok.extern.slf4j.Slf4j;
+import conditions.spring.controller.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -23,9 +25,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.function.BiFunction;
 
-@Slf4j
 @Service
 public class ConditionWorkflowConfig implements ApplicationListener<ApplicationReadyEvent> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConditionWorkflowConfig.class);
 
     @Autowired
     private ConditionRepository conditionRepository;
@@ -96,8 +99,8 @@ public class ConditionWorkflowConfig implements ApplicationListener<ApplicationR
         });
     }
 
-    private <T extends TaskEvent> NextTaskEventHandler<T> nextTask(BiFunction<Condition, T, Task<?>> taskProducer) {
-        return new NextTaskEventHandler<>(this.conditionRepository, this.taskRepository, taskProducer);
+    private <T extends TaskEvent> NextTaskEventHandler nextTask(BiFunction<Condition, T, Task> taskProducer) {
+        return new NextTaskEventHandler(this.conditionRepository, this.taskRepository, taskProducer);
     }
 
 }

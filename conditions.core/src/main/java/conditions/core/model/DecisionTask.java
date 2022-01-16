@@ -1,8 +1,18 @@
 package conditions.core.model;
 
-public abstract class NoDecisionTask extends Task<NoDecisionTask.Decision> {
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
-    public NoDecisionTask(
+public abstract class DecisionTask<E extends Enum<E>> extends Task {
+
+    @Enumerated(EnumType.STRING)
+    protected E outcome;
+
+    DecisionTask() {
+        //package-private for hibernate
+    }
+
+    protected DecisionTask(
             ConditionId conditionId,
             FulfillmentId fulfillmentId,
             Pid assignee
@@ -14,7 +24,7 @@ public abstract class NoDecisionTask extends Task<NoDecisionTask.Decision> {
         );
     }
 
-    public NoDecisionTask(
+    protected DecisionTask(
             ConditionId conditionId,
             FulfillmentId fulfillmentId,
             Pid assignee,
@@ -28,10 +38,4 @@ public abstract class NoDecisionTask extends Task<NoDecisionTask.Decision> {
         );
     }
 
-    NoDecisionTask() {
-        super();
-    }
-
-    public enum Decision {
-    }
 }

@@ -1,8 +1,9 @@
-package conditions.spring.repository;
+package conditions.spring.repositoryController;
 
 import conditions.core.model.RevisionTask;
 import conditions.core.model.TaskId;
 import conditions.core.repository.RevisionTaskRepository;
+import conditions.spring.repository.EnversTaskRevRepository;
 import org.springframework.stereotype.Service;
 
 @Service

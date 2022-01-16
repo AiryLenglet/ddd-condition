@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 @Audited
 @Entity
 @DiscriminatorValue(value = "REVIEW")
-public class ReviewTask extends Task<ReviewTask.Decision> {
+public class ReviewTask extends DecisionTask<ReviewTask.Decision> {
 
     public ReviewTask(
             ConditionId conditionId,

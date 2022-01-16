@@ -4,6 +4,8 @@ open module conditions.spring {
     requires conditions.iam;
     requires conditions.bat;
 
+    requires org.slf4j;
+
     requires spring.context;
     requires spring.boot.autoconfigure;
     requires spring.boot;
@@ -11,7 +13,6 @@ open module conditions.spring {
     requires spring.web;
     requires spring.tx;
 
-    requires lombok;
     requires spring.data.jpa;
     requires spring.data.commons;
     requires spring.data.envers;

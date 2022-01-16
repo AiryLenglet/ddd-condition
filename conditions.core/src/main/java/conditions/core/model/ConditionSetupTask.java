@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 @Audited
 @Entity
 @DiscriminatorValue(value = "CONDITION_SETUP")
-public class ConditionSetupTask extends NoDecisionTask {
+public class ConditionSetupTask extends Task {
 
     public ConditionSetupTask(
             ConditionId conditionId,

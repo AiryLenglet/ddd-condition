@@ -13,12 +13,12 @@ public class NextTaskEventHandler<T extends TaskEvent> implements EventBus.Handl
 
     private final ConditionRepository conditionRepository;
     private final TaskRepository taskRepository;
-    private final BiFunction<Condition, T, Task<?>> taskProducer;
+    private final BiFunction<Condition, T, Task> taskProducer;
 
     public NextTaskEventHandler(
             ConditionRepository conditionRepository,
             TaskRepository taskRepository,
-            BiFunction<Condition, T, Task<?>> taskProducer
+            BiFunction<Condition, T, Task> taskProducer
     ) {
         this.conditionRepository = conditionRepository;
         this.taskRepository = taskRepository;

@@ -2,7 +2,8 @@ package conditions.spring.event_bus;
 
 import conditions.core.event.Event;
 import conditions.core.event.EventBus;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Scope;
@@ -16,8 +17,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-@Slf4j
 public class InMemoryEventBus implements EventBus {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(InMemoryEventBus.class);
 
     private final Map<Class<?>, Collection<Handler<?>>> handlers = new ConcurrentHashMap<>();
     private final Map<Class<?>, Collection<Handler<?>>> postCommitHandlers = new ConcurrentHashMap<>();
@@ -44,12 +46,12 @@ public class InMemoryEventBus implements EventBus {
     @SuppressWarnings("all")
     @Override
     public void publish(Event event) {
-        log.info("Event '{}' published", event);
+        LOGGER.info("Event '{}' published", event);
         final var handlers = this.handlers.get(event.getClass());
         if (handlers != null) {
             handlers.stream()
                     .map(handler -> (Handler) handler)
-                    .peek(handler -> log.info("Event handled by '{}'", handler.getClass()))
+                    .peek(handler -> LOGGER.info("Event handled by '{}'", handler.getClass()))
                     .forEach(handler -> handler.handle(event));
         }
 
@@ -64,11 +66,11 @@ public class InMemoryEventBus implements EventBus {
 
     @TransactionalEventListener
     void handleAfterCommit(AfterCommit afterCommit) {
-        log.info("Handling post commit event {} with {}", afterCommit.event, afterCommit.handler);
+        LOGGER.info("Handling post commit event {} with {}", afterCommit.event, afterCommit.handler);
         try {
             afterCommit.handler.handle(afterCommit.event);
         } catch (Exception e) {
-            log.error("Something happened", e);
+            LOGGER.error("Something happened", e);
         }
     }
 
