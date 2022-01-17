@@ -63,6 +63,18 @@ public abstract class Task extends Aggregate {
         return taskId;
     }
 
+    public ConditionId getConditionId() {
+        return conditionId;
+    }
+
+    public FulfillmentId getFulfillmentId() {
+        return fulfillmentId;
+    }
+
+    public Pid getAssignee() {
+        return assignee;
+    }
+
     public void updateComment(String comment) {
         this.comment = comment;
     }
