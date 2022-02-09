@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.function.BiFunction;
 
+import static conditions.core.repository.ConditionRepository.Specifications.conditionId;
+
 @Service
 public class ConditionWorkflowConfig implements ApplicationListener<ApplicationReadyEvent> {
 
@@ -85,13 +87,13 @@ public class ConditionWorkflowConfig implements ApplicationListener<ApplicationR
         ));
 
         this.eventBus.subscribe(FulfillmentReviewedEvent.class, event -> {
-            final var fulfillment = fulfillmentRepository.findById(event.fulfillmentId());
+            final var fulfillment = fulfillmentRepository.findOne(FulfillmentRepository.Specifications.id(event.fulfillmentId()));
             fulfillment.finished();
             fulfillmentRepository.save(fulfillment);
         });
 
         this.eventBus.subscribe(FulfillmentFinishedEvent.class, event -> {
-            final var condition = conditionRepository.findById(event.conditionId());
+            final var condition = conditionRepository.findOne(conditionId(event.conditionId()));
             if (condition.isRecurring()) {
                 return;
             }

@@ -9,11 +9,15 @@ import java.util.stream.Stream;
 public interface FulfillmentRepository {
     void save(Fulfillment fulfillment);
 
-    Fulfillment findById(FulfillmentId fulfillmentId);
+    Fulfillment findOne(Specification<Fulfillment> fulfillmentId);
 
     Stream<Fulfillment> findAll(Specification<Fulfillment> specification);
 
     final class Specifications {
+
+        public static Specification<Fulfillment> id(FulfillmentId fulfillmentId) {
+            return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("id"), fulfillmentId);
+        }
 
         public static Specification<Fulfillment> conditionId(ConditionId conditionId) {
             return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("conditionId"), conditionId);

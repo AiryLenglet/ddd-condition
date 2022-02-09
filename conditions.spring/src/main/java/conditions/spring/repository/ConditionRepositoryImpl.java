@@ -1,54 +1,18 @@
 package conditions.spring.repository;
 
-import conditions.core.event.Event;
 import conditions.core.event.EventBus;
 import conditions.core.model.Condition;
-import conditions.core.model.ConditionId;
 import conditions.core.repository.ConditionRepository;
-import conditions.core.repository.Specification;
+import conditions.core.repository.EventPublisherEntityManagerRepository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import java.util.stream.Stream;
 
-public class ConditionRepositoryImpl implements ConditionRepository {
-
-    private final SpringConditionRepository springConditionRepository;
-    private final EventBus eventBus;
-    private EntityManager entityManager;
+public class ConditionRepositoryImpl extends EventPublisherEntityManagerRepository<Condition> implements ConditionRepository {
 
     public ConditionRepositoryImpl(
-            SpringConditionRepository springConditionRepository,
-            EventBus eventBus
+            EventBus eventBus,
+            EntityManager entityManager
     ) {
-        this.springConditionRepository = springConditionRepository;
-        this.eventBus = eventBus;
-    }
-
-    @Override
-    public void save(Condition condition) {
-        Event event;
-        //handling before or after saving ?
-        while ((event = condition.pollEvent()) != null) {
-            this.eventBus.publish(event);
-        }
-        this.springConditionRepository.save(condition);
-    }
-
-    @Override
-    public Condition findById(ConditionId id) {
-        return this.springConditionRepository.getById(id);
-    }
-
-    @Override
-    public Stream<Condition> findAll(Specification<Condition> specification) {
-        final var criteriaBuilder = this.entityManager.getCriteriaBuilder();
-        final CriteriaQuery<Condition> query = criteriaBuilder.createQuery(Condition.class);
-        final Root<Condition> root = query.from(Condition.class);
-
-        query.where(specification.toPredicate(root, query, criteriaBuilder));
-
-        return this.entityManager.createQuery(query).getResultList().stream();
+        super(entityManager, Condition.class, eventBus);
     }
 }

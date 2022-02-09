@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Condition extends Aggregate {
@@ -136,4 +137,16 @@ public class Condition extends Aggregate {
         DISCARDED
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Condition condition = (Condition) o;
+        return conditionId.equals(condition.conditionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(conditionId);
+    }
 }

@@ -8,7 +8,15 @@ import java.util.stream.Stream;
 public interface ConditionRepository {
     void save(Condition condition);
 
-    Condition findById(ConditionId id);
+    Condition findOne(Specification<Condition> specification);
 
     Stream<Condition> findAll(Specification<Condition> specification);
+
+    final class Specifications {
+
+        public static Specification<Condition> conditionId(ConditionId conditionId) {
+            return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("id"), conditionId);
+        }
+
+    }
 }

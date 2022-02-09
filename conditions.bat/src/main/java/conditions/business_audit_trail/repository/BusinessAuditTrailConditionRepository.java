@@ -2,7 +2,6 @@ package conditions.business_audit_trail.repository;
 
 import conditions.context.UserProvider;
 import conditions.core.model.Condition;
-import conditions.core.model.ConditionId;
 import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.Specification;
 import org.slf4j.Logger;
@@ -36,10 +35,9 @@ public class BusinessAuditTrailConditionRepository implements ConditionRepositor
     }
 
     @Override
-    public Condition findById(ConditionId id) {
-        LOGGER.info("findById {}", id);
-        final var condition = this.delegate.findById(id);
-        this.businessAuditTrail.save("user " + this.userProvider.currentUser() + " accessed condition " + id);
+    public Condition findOne(Specification<Condition> specification) {
+        final var condition = this.delegate.findOne(specification);
+        this.businessAuditTrail.save("user " + this.userProvider.currentUser() + " accessed condition " + condition.getConditionId());
         return condition;
     }
 

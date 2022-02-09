@@ -2,7 +2,6 @@ package conditions.iam.repository;
 
 import conditions.context.UserProvider;
 import conditions.core.model.Condition;
-import conditions.core.model.ConditionId;
 import conditions.core.model.Country;
 import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.Specification;
@@ -52,15 +51,9 @@ public class IamConditionRepository implements ConditionRepository {
     }
 
     @Override
-    public Condition findById(ConditionId id) {
+    public Condition findOne(Specification<Condition> specification) {
         final User user = this.userRepository.findById(this.userProvider.currentUser());
-        final var result = this.conditionRepository.findById(id);
-
-        if (!this.canSeeCondition(user, result)) {
-            throw new EntityNotFoundException();
-        }
-
-        return result;
+        return this.conditionRepository.findOne(specification.and(crossBorder(user.location())));
     }
 
     @Override

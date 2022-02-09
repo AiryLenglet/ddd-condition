@@ -9,13 +9,17 @@ import java.util.stream.Stream;
 public interface TaskRepository {
     void save(Task task);
 
-    Task findById(TaskId id);
+    Task findOne(Specification<Task> specification);
 
     Stream<Task> findAll(Specification<Task> specification);
 
     final class Specifications {
 
         private Specifications() {
+        }
+
+        public static Specification<Task> id(TaskId taskId) {
+            return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("id"), taskId);
         }
 
         public static Specification<Task> isOpen() {

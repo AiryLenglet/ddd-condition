@@ -6,6 +6,8 @@ import conditions.core.model.FulfillmentTask;
 import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.TaskRepository;
 
+import static conditions.core.repository.ConditionRepository.Specifications.conditionId;
+
 public class FulfillmentOpenedEventHandler implements EventBus.Handler<FulfillmentOpenedEvent> {
 
     private final ConditionRepository conditionRepository;
@@ -21,7 +23,7 @@ public class FulfillmentOpenedEventHandler implements EventBus.Handler<Fulfillme
 
     @Override
     public void handle(FulfillmentOpenedEvent event) {
-        final var condition = this.conditionRepository.findById(event.getConditionId());
+        final var condition = this.conditionRepository.findOne(conditionId(event.getConditionId()));
         this.taskRepository.save(new FulfillmentTask(
                 event.getConditionId(),
                 event.getFulfillmentId(),

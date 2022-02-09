@@ -9,6 +9,8 @@ import conditions.core.repository.TaskRepository;
 
 import java.util.function.BiFunction;
 
+import static conditions.core.repository.ConditionRepository.Specifications.conditionId;
+
 public class NextTaskEventHandler<T extends TaskEvent> implements EventBus.Handler<T> {
 
     private final ConditionRepository conditionRepository;
@@ -27,7 +29,7 @@ public class NextTaskEventHandler<T extends TaskEvent> implements EventBus.Handl
 
     @Override
     public void handle(T event) {
-        final var condition = this.conditionRepository.findById(event.conditionId());
+        final var condition = this.conditionRepository.findOne(conditionId(event.conditionId()));
         this.taskRepository.save(this.taskProducer.apply(condition, event));
     }
 }

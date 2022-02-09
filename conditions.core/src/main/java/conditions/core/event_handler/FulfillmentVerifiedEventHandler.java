@@ -6,6 +6,8 @@ import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.FulfillmentRepository;
 import conditions.core.repository.TaskRepository;
 
+import static conditions.core.repository.FulfillmentRepository.Specifications.id;
+
 public class FulfillmentVerifiedEventHandler extends NextTaskEventHandler<FulfillmentVerifiedEvent> {
 
     private final FulfillmentRepository fulfillmentRepository;
@@ -24,7 +26,7 @@ public class FulfillmentVerifiedEventHandler extends NextTaskEventHandler<Fulfil
 
     @Override
     public void handle(FulfillmentVerifiedEvent event) {
-        final var fulfillment = this.fulfillmentRepository.findById(event.fulfillmentId());
+        final var fulfillment = this.fulfillmentRepository.findOne(id(event.fulfillmentId()));
         if (fulfillment.isFulfillmentReviewRequired()) {
             super.handle(event);
         } else {

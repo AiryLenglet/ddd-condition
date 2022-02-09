@@ -6,12 +6,15 @@ import conditions.core.event.EventBus;
 import conditions.core.model.Country;
 import conditions.core.model.Pid;
 import conditions.core.repository.ConditionRepository;
+import conditions.core.repository.FulfillmentRepository;
+import conditions.core.repository.TaskRepository;
 import conditions.iam.model.User;
 import conditions.iam.repository.IamConditionRepository;
 import conditions.iam.repository.UserRepository;
 import conditions.spring.repository.ConditionRepositoryImpl;
+import conditions.spring.repository.FulfillmentRepositoryImpl;
 import conditions.spring.repository.RequestCachedUserRepository;
-import conditions.spring.repository.SpringConditionRepository;
+import conditions.spring.repository.TaskRepositoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -22,6 +25,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.persistence.EntityManager;
+
 @Configuration
 public class RepositoryConfig {
 
@@ -29,20 +34,36 @@ public class RepositoryConfig {
 
     @Bean
     public ConditionRepository conditionRepository(
-            SpringConditionRepository springConditionRepository,
             EventBus eventBus,
             UserRepository userRepository,
             UserProvider userProvider,
-            BusinessAuditTrailConditionRepository.BusinessAuditTrail businessAuditTrail
+            BusinessAuditTrailConditionRepository.BusinessAuditTrail businessAuditTrail,
+            EntityManager entityManager
     ) {
         return new IamConditionRepository(
                 new BusinessAuditTrailConditionRepository(
-                        new ConditionRepositoryImpl(springConditionRepository, eventBus),
+                        new ConditionRepositoryImpl(eventBus, entityManager),
                         businessAuditTrail,
                         userProvider),
                 userRepository,
                 userProvider
         );
+    }
+
+    @Bean
+    public TaskRepository taskRepository(
+            EventBus eventBus,
+            EntityManager entityManager
+    ) {
+        return new TaskRepositoryImpl(eventBus, entityManager);
+    }
+
+    @Bean
+    public FulfillmentRepository fulfillmentRepository(
+            EventBus eventBus,
+            EntityManager entityManager
+    ) {
+        return new FulfillmentRepositoryImpl(eventBus, entityManager);
     }
 
     @Bean
