@@ -1,16 +1,20 @@
 package conditions.spring.controller;
 
 import conditions.core.model.*;
+import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.TaskRepository;
-import conditions.core.repository.TaskRepository.Specifications;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static conditions.core.repository.TaskRepository.Specifications.*;
+import java.util.stream.Collectors;
+
+import static conditions.core.repository.TaskRepository.Specifications.id;
 
 @RestController
 public class Controller {
@@ -19,6 +23,8 @@ public class Controller {
 
     @Autowired
     private TaskRepository taskRepository;
+    @Autowired
+    private ConditionRepository conditionRepository;
 
     @GetMapping
     void test() {
@@ -35,5 +41,17 @@ public class Controller {
         task.updateComment("everything is alright");
         task.submit();
         this.taskRepository.save(task);
+    }
+
+    @Transactional
+    @PostMapping
+    public void createCondition() {
+        final var condtiions = this.conditionRepository.findAll(
+                (root, query, criteriaBuilder) -> criteriaBuilder.isNotNull(root.get("conditionId")))
+                .collect(Collectors.toList());
+
+        final var condition = new Condition("jack");
+        condition.changeOwner("456789");
+        this.conditionRepository.save(condition);
     }
 }

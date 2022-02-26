@@ -91,7 +91,7 @@ public class IamConditionRepository implements ConditionRepository {
     }
 
     private Path<Object> bookingLocationPath(Root<Condition> root) {
-        return root.get("bookingLocation.code");
+        return root.get("bookingLocation");
     }
 
     private boolean canSeeCondition(User aUser, Condition aCondition) {

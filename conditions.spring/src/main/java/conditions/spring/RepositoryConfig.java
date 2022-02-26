@@ -85,7 +85,7 @@ public class RepositoryConfig {
 
                             @Override
                             public Country location() {
-                                return null;
+                                return new Country("FR");
                             }
 
                             @Override

@@ -2,6 +2,7 @@ package conditions.iam.cross_border;
 
 import conditions.core.model.Country;
 
+import java.util.Collections;
 import java.util.LinkedList;
 
 public class InvestmentCrossBorderRule {
@@ -10,6 +11,10 @@ public class InvestmentCrossBorderRule {
     }
 
     public static Iterable<Country> canNotSee(Country aCountry) {
+        if (aCountry == null) {
+            return Collections.emptyList();
+        }
+
         final var excludedCountries = new LinkedList<Country>();
         if ("RU".equals(aCountry.getCode())) {
             excludedCountries.add(new Country("SA"));
