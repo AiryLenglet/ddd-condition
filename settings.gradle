@@ -1,0 +1,9 @@
+
+rootProject.name="conditions-parent"
+include 'conditions.bat'
+include 'conditions.common'
+include 'conditions.context'
+include 'conditions.core'
+include 'conditions.iam'
+include 'conditions.micronaut'
+include 'conditions.reminder'

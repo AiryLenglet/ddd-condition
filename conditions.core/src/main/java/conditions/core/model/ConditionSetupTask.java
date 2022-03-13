@@ -1,12 +1,11 @@
 package conditions.core.model;
 
 import conditions.core.event.condition.ConditionSubmittedEvent;
-import org.hibernate.envers.Audited;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-@Audited
+//@Audited
 @Entity
 @DiscriminatorValue(value = "CONDITION_SETUP")
 public class ConditionSetupTask extends Task {

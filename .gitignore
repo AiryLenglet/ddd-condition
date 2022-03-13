@@ -2,3 +2,5 @@
 target
 *.iml
 .attach_pid*
+.gradle
+build

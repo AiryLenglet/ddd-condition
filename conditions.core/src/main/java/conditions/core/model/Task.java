@@ -1,11 +1,10 @@
 package conditions.core.model;
 
 import conditions.common.util.Validate;
-import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 
-@Audited
+//@Audited
 @Entity
 @DiscriminatorColumn(name = "TYPE")
 public abstract class Task extends Aggregate {

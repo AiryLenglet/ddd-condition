@@ -3,12 +3,11 @@ package conditions.core.model;
 import conditions.common.util.Validate;
 import conditions.core.event.fulfillment.FulfillmentReviewAskedForChangeEvent;
 import conditions.core.event.fulfillment.FulfillmentVerifiedEvent;
-import org.hibernate.envers.Audited;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-@Audited
+//@Audited
 @Entity
 @DiscriminatorValue(value = "REVIEW")
 public class ReviewTask extends DecisionTask<ReviewTask.Decision> {

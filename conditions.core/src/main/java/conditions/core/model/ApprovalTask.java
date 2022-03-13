@@ -4,12 +4,11 @@ import conditions.common.util.Validate;
 import conditions.core.event.approval.AskedChangeEvent;
 import conditions.core.event.approval.ConditionAcceptedEvent;
 import conditions.core.event.approval.ConditionRejectedEvent;
-import org.hibernate.envers.Audited;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-@Audited
+//@Audited
 @Entity
 @DiscriminatorValue(value = "APPROVAL")
 public class ApprovalTask extends DecisionTask<ApprovalTask.Decision> {

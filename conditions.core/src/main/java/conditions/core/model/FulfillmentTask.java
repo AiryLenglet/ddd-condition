@@ -1,12 +1,11 @@
 package conditions.core.model;
 
 import conditions.core.event.fulfillment.ConditionFulfilledEvent;
-import org.hibernate.envers.Audited;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-@Audited
+//@Audited
 @Entity
 @DiscriminatorValue(value = "FULFILLMENT")
 public class FulfillmentTask extends Task {
