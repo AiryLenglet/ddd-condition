@@ -6,6 +6,8 @@ open module conditions.spring {
 
     requires org.slf4j;
 
+    requires jakarta.inject;
+
     requires java.persistence;
     requires java.transaction; //to be removed
 
@@ -15,5 +17,5 @@ open module conditions.spring {
     requires io.micronaut.core;
     requires io.micronaut.data.data_model;
     requires io.micronaut.runtime;
-
+    requires io.micronaut.data.data_tx;
 }

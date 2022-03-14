@@ -8,6 +8,7 @@ import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.FulfillmentRepository;
 import conditions.core.repository.TaskRepository;
 import conditions.iam.model.User;
+import conditions.iam.repository.IamConditionRepository;
 import conditions.iam.repository.UserRepository;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
@@ -28,9 +29,15 @@ public class RepositoryFactory {
     @Bean
     public ConditionRepository conditionRepository(
             EventBus eventBus,
-            EntityManager entityManager
+            EntityManager entityManager,
+            UserRepository userRepository,
+            UserProvider userProvider
     ) {
-        return new ConditionRepositoryImpl(eventBus, entityManager);
+        return new IamConditionRepository(
+                new ConditionRepositoryImpl(eventBus, entityManager),
+                userRepository,
+                userProvider
+        );
     }
 
     @Bean

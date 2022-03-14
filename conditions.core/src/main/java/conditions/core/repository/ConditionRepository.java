@@ -15,7 +15,11 @@ public interface ConditionRepository {
     final class Specifications {
 
         public static Specification<Condition> conditionId(ConditionId conditionId) {
-            return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("id"), conditionId);
+            return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("conditionId"), conditionId);
+        }
+
+        public static Specification<Condition> all() {
+            return (root, query, criteriaBuilder) -> criteriaBuilder.isNotNull(root.get("conditionId"));
         }
 
     }

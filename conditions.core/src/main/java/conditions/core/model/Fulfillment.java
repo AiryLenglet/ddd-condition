@@ -53,7 +53,7 @@ public class Fulfillment extends Aggregate {
         this.addEvent(new FulfillmentFinishedEvent(this.conditionId, this.fulfillmentId));
     }
 
-    enum Status {
+    public enum Status {
         OPEN,
         CANCELLED,
         DONE;

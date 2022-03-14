@@ -53,6 +53,10 @@ public class Condition extends Aggregate {
         return imposer;
     }
 
+    public void setImposer(Imposer imposer) {
+        this.imposer = imposer;
+    }
+
     public Country getBookingLocation() {
         return bookingLocation;
     }

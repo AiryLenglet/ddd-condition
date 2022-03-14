@@ -80,7 +80,27 @@ public class ConditionWorkflowConfigurer {
         /* FULFILLMENT */
         this.eventBus.subscribe(
                 FulfillmentOpenedEvent.class,
-                nextTask((c, e) -> new FulfillmentTask(c.getConditionId(), e.fulfillmentId(), c.getImposer().getPid()))
+                new EventBus.Handler<FulfillmentOpenedEvent>() {
+                    @Override
+                    public void handle(FulfillmentOpenedEvent event) {
+                        nextTask((c, e) -> new FulfillmentTask(c.getConditionId(), e.fulfillmentId(), c.getImposer().getPid())).handle(new TaskEvent() {
+                            @Override
+                            public TaskId taskId() {
+                                return null;
+                            }
+
+                            @Override
+                            public FulfillmentId fulfillmentId() {
+                                return event.getFulfillmentId();
+                            }
+
+                            @Override
+                            public ConditionId conditionId() {
+                                return event.getConditionId();
+                            }
+                        });
+                    }
+                }
         );
 
         this.eventBus.subscribe(
@@ -136,8 +156,8 @@ public class ConditionWorkflowConfigurer {
         return this.fulfillmentRepository.findOne(FulfillmentRepository.Specifications.id(fulfillmentId));
     }
 
-    private <T extends TaskEvent> NextTaskEventHandler nextTask(BiFunction<Condition, T, Task> taskProducer) {
-        return new NextTaskEventHandler(this.conditionRepository, this.taskRepository, taskProducer);
+    private <T extends TaskEvent> NextTaskEventHandler<T> nextTask(BiFunction<Condition, T, Task> taskProducer) {
+        return new NextTaskEventHandler<>(this.conditionRepository, this.taskRepository, taskProducer);
     }
 
 }

@@ -7,7 +7,8 @@ import io.micronaut.runtime.Micronaut;
 
 @Introspected(classes = {
         FulfillmentTask.class,
-        Condition.class
+        Condition.class,
+        Fulfillment.class
 })
 
 @TypeHint(
@@ -18,6 +19,7 @@ import io.micronaut.runtime.Micronaut;
 
                 Fulfillment.class,
                 FulfillmentId.class,
+                Fulfillment.Status.class,
 
                 Task.class,
                 TaskId.class,

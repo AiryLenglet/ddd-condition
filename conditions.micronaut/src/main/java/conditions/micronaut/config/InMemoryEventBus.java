@@ -3,6 +3,9 @@ package conditions.micronaut.config;
 import conditions.core.event.Event;
 import conditions.core.event.EventBus;
 import io.micronaut.context.annotation.Bean;
+import io.micronaut.context.event.ApplicationEventPublisher;
+import io.micronaut.transaction.annotation.TransactionalEventListener;
+import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,19 +15,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Bean
-//@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+@Singleton
 public class InMemoryEventBus implements EventBus {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InMemoryEventBus.class);
 
     private final Map<Class<?>, Collection<Handler<?>>> handlers = new ConcurrentHashMap<>();
     private final Map<Class<?>, Collection<Handler<?>>> postCommitHandlers = new ConcurrentHashMap<>();
-    //private final ApplicationEventPublisher applicationEventPublisher;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public InMemoryEventBus(
-            //      ApplicationEventPublisher applicationEventPublisher
+            ApplicationEventPublisher applicationEventPublisher
     ) {
-        //this.applicationEventPublisher = applicationEventPublisher;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -51,7 +54,7 @@ public class InMemoryEventBus implements EventBus {
                     .forEach(handler -> handler.handle(event));
         }
 
-        /*
+
         final var handlers_ = this.postCommitHandlers.get(event.getClass());
         if (handlers_ != null) {
             handlers_.stream()
@@ -60,10 +63,9 @@ public class InMemoryEventBus implements EventBus {
                     .forEach(this.applicationEventPublisher::publishEvent);
         }
 
-         */
     }
 
-    //@TransactionalEventListener
+    @TransactionalEventListener
     void handleAfterCommit(AfterCommit afterCommit) {
         LOGGER.info("Handling post commit event {} with {}", afterCommit.event, afterCommit.handler);
         try {
