@@ -1,2 +1,2 @@
 #!/bin/sh
-mvn spring-boot:run -pl conditions.spring -am
+./gradlew run -p conditions.micronaut "$@"

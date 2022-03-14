@@ -3,13 +3,6 @@ plugins {
     id("io.micronaut.application") version "3.2.2"
 }
 
-group 'me.lenglet'
-version '0.1'
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     annotationProcessor("io.micronaut:micronaut-http-validation")
     annotationProcessor("io.micronaut:micronaut-inject-java")
@@ -56,9 +49,3 @@ micronaut {
         annotations("conditions.*")
     }
 }
-/*
-test {
-    useJUnitPlatform()
-}
-
- */

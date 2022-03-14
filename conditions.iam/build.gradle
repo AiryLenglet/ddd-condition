@@ -2,20 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'me.lenglet'
-version '0.1'
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation project(':conditions.core')
     implementation project(':conditions.context')
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-}
-
-test {
-    useJUnitPlatform()
 }
