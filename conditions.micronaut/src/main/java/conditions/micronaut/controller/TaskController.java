@@ -57,7 +57,7 @@ public class TaskController {
     void updateConditions() {
         this.conditionRepository.findAll(ConditionRepository.Specifications.all())
                 .map(c -> {
-                    c.changeOwner("678956");
+                    c.changeOwner("123456");
                     return c;
                 })
                 .forEach(c ->this.conditionRepository.save(c));

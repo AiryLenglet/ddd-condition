@@ -7,6 +7,7 @@ import conditions.core.model.*;
 import conditions.core.repository.*;
 import conditions.iam.model.User;
 import conditions.iam.repository.IamConditionRepository;
+import conditions.iam.repository.IamConditionRevisionRepository;
 import conditions.iam.repository.UserRepository;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
@@ -142,9 +143,13 @@ public class RepositoryFactory {
 
     @Bean
     public ConditionRevisionRepository conditionRevisionRepository(
-            EntityManager entityManager
+            EntityManager entityManager,
+            UserProvider userProvider
     ) {
-        return new ConditionRevisionRepositoryImpl(entityManager);
+        return new IamConditionRevisionRepository(
+                new ConditionRevisionRepositoryImpl(entityManager),
+                userProvider
+        );
     }
 
     @Bean

@@ -2,6 +2,7 @@ package conditions.core.model;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Objects;
 
 import static conditions.common.util.Validate.notNull;
 
@@ -100,5 +101,18 @@ public class TaskRevision {
 
     public Instant getAuditTime() {
         return auditTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TaskRevision task = (TaskRevision) o;
+        return id.equals(task.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
