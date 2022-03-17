@@ -5,7 +5,6 @@ import conditions.core.event.condition.ConditionSubmittedEvent;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-//@Audited
 @Entity
 @DiscriminatorValue(value = "CONDITION_SETUP")
 public class ConditionSetupTask extends Task {

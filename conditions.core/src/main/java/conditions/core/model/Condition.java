@@ -28,6 +28,8 @@ public class Condition extends Aggregate {
     private boolean isRecurring = false;
     @Embedded
     private Country bookingLocation;
+    @Version
+    private Long version;
 
     Condition() {
         //package-private for hibernate
@@ -67,6 +69,18 @@ public class Condition extends Aggregate {
 
     public boolean isRecurring() {
         return isRecurring;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public boolean isFulfillmentReviewRequired() {
+        return fulfillmentReviewRequired;
+    }
+
+    public Long getVersion() {
+        return version;
     }
 
     public void changeOwner(String aPid) {

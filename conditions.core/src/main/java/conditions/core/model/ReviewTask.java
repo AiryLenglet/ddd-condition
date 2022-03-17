@@ -7,7 +7,6 @@ import conditions.core.event.fulfillment.FulfillmentVerifiedEvent;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-//@Audited
 @Entity
 @DiscriminatorValue(value = "REVIEW")
 public class ReviewTask extends DecisionTask<ReviewTask.Decision> {

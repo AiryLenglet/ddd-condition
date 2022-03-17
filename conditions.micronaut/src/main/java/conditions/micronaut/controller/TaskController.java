@@ -2,6 +2,7 @@ package conditions.micronaut.controller;
 
 import conditions.core.model.*;
 import conditions.core.repository.ConditionRepository;
+import conditions.core.repository.ConditionRevisionRepository;
 import conditions.core.repository.FulfillmentRepository;
 import conditions.core.repository.TaskRepository;
 import io.micronaut.http.annotation.Controller;
@@ -16,15 +17,18 @@ public class TaskController {
     private final TaskRepository taskRepository;
     private final ConditionRepository conditionRepository;
     private final FulfillmentRepository fulfillmentRepository;
+    private final ConditionRevisionRepository conditionRevisionRepository;
 
     public TaskController(
             TaskRepository taskRepository,
             ConditionRepository conditionRepository,
-            FulfillmentRepository fulfillmentRepository
+            FulfillmentRepository fulfillmentRepository,
+            ConditionRevisionRepository conditionRevisionRepository
     ) {
         this.taskRepository = taskRepository;
         this.conditionRepository = conditionRepository;
         this.fulfillmentRepository = fulfillmentRepository;
+        this.conditionRevisionRepository = conditionRevisionRepository;
     }
 
     @Get
@@ -46,5 +50,22 @@ public class TaskController {
         this.fulfillmentRepository.save(condition.startNewFulfillment());
 
         return this.conditionRepository.findAll(ConditionRepository.Specifications.all());
+    }
+
+    @Get("/conditions/up")
+    @Transactional
+    void updateConditions() {
+        this.conditionRepository.findAll(ConditionRepository.Specifications.all())
+                .map(c -> {
+                    c.changeOwner("678956");
+                    return c;
+                })
+                .forEach(c ->this.conditionRepository.save(c));
+    }
+
+    @Get("/conditions/hist")
+    @Transactional
+    Stream<ConditionRevision> conditionRevisions() {
+        return this.conditionRevisionRepository.findAll(ConditionRevisionRepository.Specifications.all());
     }
 }

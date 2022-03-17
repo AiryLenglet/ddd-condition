@@ -7,7 +7,6 @@ import conditions.core.event.fulfillment.FulfillmentVerificationAskedForChangeEv
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-//@Audited
 @Entity
 @DiscriminatorValue(value = "VERIFICATION")
 public class VerificationTask extends DecisionTask<VerificationTask.Decision> {

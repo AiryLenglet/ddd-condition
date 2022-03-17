@@ -4,7 +4,6 @@ import conditions.common.util.Validate;
 
 import javax.persistence.*;
 
-//@Audited
 @Entity
 @DiscriminatorColumn(name = "TYPE")
 public abstract class Task extends Aggregate {
@@ -72,6 +71,22 @@ public abstract class Task extends Aggregate {
 
     public Pid getAssignee() {
         return assignee;
+    }
+
+    public TaskId getPreviousTaskId() {
+        return previousTaskId;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public Long getVersion() {
+        return version;
     }
 
     public void updateComment(String comment) {

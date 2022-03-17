@@ -4,5 +4,5 @@ plugins {
 
 dependencies {
     implementation project(':conditions.common')
-    //implementation 'org.hibernate:hibernate-envers:5.4.32.Final'
+    implementation 'jakarta.inject:jakarta.inject-api:2.0.1'
 }

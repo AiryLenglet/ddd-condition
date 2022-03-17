@@ -8,7 +8,6 @@ import conditions.core.event.approval.ConditionRejectedEvent;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-//@Audited
 @Entity
 @DiscriminatorValue(value = "APPROVAL")
 public class ApprovalTask extends DecisionTask<ApprovalTask.Decision> {

@@ -5,7 +5,6 @@ import conditions.core.event.fulfillment.ConditionFulfilledEvent;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-//@Audited
 @Entity
 @DiscriminatorValue(value = "FULFILLMENT")
 public class FulfillmentTask extends Task {

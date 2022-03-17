@@ -38,4 +38,7 @@ public abstract class DecisionTask<E extends Enum<E>> extends Task {
         );
     }
 
+    public E getOutcome() {
+        return outcome;
+    }
 }

@@ -3,7 +3,7 @@ module conditions.core {
 
     requires java.transaction;
     requires java.persistence;
-    //requires org.hibernate.orm.envers;
+    requires jakarta.inject;
 
     requires org.slf4j;
 
