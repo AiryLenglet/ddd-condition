@@ -1,0 +1,10 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    implementation project(':conditions.micronaut')
+    testImplementation("io.micronaut:micronaut-context:3.3.4")
+    testImplementation 'io.rest-assured:rest-assured:4.5.1'
+
+}

@@ -7,3 +7,5 @@ include 'conditions.core'
 include 'conditions.iam'
 include 'conditions.micronaut'
 include 'conditions.reminder'
+include 'conditions.scenario-testing'
+
