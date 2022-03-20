@@ -37,7 +37,12 @@ import io.micronaut.runtime.Micronaut;
                 UuidId.class,
                 Country.class,
                 Imposer.class,
-                Owner.class
+                Owner.class,
+
+                conditions.api.model.ConditionId.class,
+                conditions.api.model.Condition.class,
+                conditions.api.model.CompleteTask.class,
+                conditions.api.model.Task.class
         },
         accessType = {
                 TypeHint.AccessType.ALL_DECLARED_CONSTRUCTORS,

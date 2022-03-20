@@ -26,6 +26,7 @@ dependencies {
     implementation project(':conditions.iam')
     implementation project(':conditions.bat')
     implementation project(':conditions.context')
+    implementation project(':conditions.rest-api')
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
@@ -38,6 +39,14 @@ application {
 java {
     sourceCompatibility = JavaVersion.toVersion("17")
     targetCompatibility = JavaVersion.toVersion("17")
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "/home/airy/workspace/ddd-condition/conditions.rest-api/build/generate-resources/main/src/gen/java"
+        }
+    }
 }
 
 graalvmNative.toolchainDetection = false

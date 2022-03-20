@@ -1,0 +1,111 @@
+openapi: "3.0.3"
+info:
+  description: "This is a sample server Petstore server.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For this sample, you can use the api key `special-key` to test the authorization     filters."
+  version: "1.0.0"
+  title: "Swagger ddd-conditions"
+paths:
+
+  "/conditions":
+    post:
+      summary: "Create a condition"
+      responses:
+        "201":
+          description: "Invalid input"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/ConditionId"
+
+  "/conditions/{conditionId}":
+    get:
+      parameters:
+        - name: "conditionId"
+          in: "path"
+          description: "ID of condition to return"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Condition"
+
+  "/conditions/{conditionId}/start":
+    put:
+      parameters:
+        - name: "conditionId"
+          in: "path"
+          description: "ID of condition to start"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "successful operation"
+
+  "/conditions/{conditionId}/discard":
+    put:
+      parameters:
+        - name: "conditionId"
+          in: "path"
+          description: "ID of condition to discard"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "successful operation"
+
+  "/tasks/{taskId}/complete":
+    put:
+      parameters:
+        - name: "taskId"
+          in: "path"
+          description: "ID of task to complete"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/CompleteTask"
+      responses:
+        "200":
+          description: "successful operation"
+
+components:
+  schemas:
+    ConditionId:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+    Condition:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        openTask:
+          $ref: "#/components/schemas/Task"
+    Task:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        assignee:
+          type: "string"
+        type:
+          type: "string"
+    CompleteTask:
+      type: "object"
+      properties:
+        comment:
+          type: "string"

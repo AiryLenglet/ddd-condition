@@ -1,5 +1,6 @@
 package conditions.micronaut.controller;
 
+import conditions.api.model.CompleteTask;
 import conditions.core.model.*;
 import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.ConditionRevisionRepository;
@@ -9,6 +10,7 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 
 import javax.transaction.Transactional;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @Controller
@@ -55,45 +57,31 @@ public class TaskController {
     @Post("/conditions")
     @Status(HttpStatus.CREATED)
     @Transactional
-    ConditionIdDto createCondition() {
+    conditions.api.model.ConditionId createCondition() {
+        new conditions.api.model.Condition();
+
         final var condition = new Condition("TYPE");
         condition.setImposer(new Imposer(new Pid("222222")));
         this.conditionRepository.save(condition);
 
-        return new ConditionIdDto(condition.getConditionId().getId());
-    }
-
-    public record ConditionIdDto(
-            String id
-    ) {
-    }
-
-    public record ConditionDto(
-            String id,
-            TaskDto openTask
-    ) {
-    }
-
-    public record TaskDto(
-            String id,
-            String assignee
-    ) {
+        return new conditions.api.model.ConditionId()
+                .id(UUID.fromString(condition.getConditionId().getId()));
     }
 
     @Get("/conditions/{conditionId}")
     @Transactional
-    ConditionDto getCondition(@PathVariable("conditionId") String conditionId) {
+    conditions.api.model.Condition getCondition(@PathVariable("conditionId") String conditionId) {
         final var condition = this.conditionRepository.findOne(ConditionRepository.Specifications.conditionId(conditionId));
         final var openTask = this.taskRepository.findAll(TaskRepository.Specifications.isOpen().and(TaskRepository.Specifications.conditionId(conditionId)));
-        return new ConditionDto(
-                condition.getConditionId().getId(),
-                openTask.findFirst()
-                        .map(t -> new TaskDto(
-                                t.getTaskId().getId(),
-                                t.getAssignee().getValue()
-                        ))
+        return new conditions.api.model.Condition()
+                .id(UUID.fromString(condition.getConditionId().getId()))
+                .openTask(openTask.findFirst()
+                        .map(t -> new conditions.api.model.Task()
+                                .id(UUID.fromString(t.getTaskId().getId()))
+                                .assignee(t.getAssignee().getValue())
+                        )
                         .orElse(null)
-        );
+                );
     }
 
     @Put("/conditions/{conditionId}/start")
@@ -126,19 +114,14 @@ public class TaskController {
                 .forEach(c -> this.conditionRepository.save(c));
     }
 
-    record CompleteTaskDto(
-            String comment
-    ) {
-    }
-
     @Put("/tasks/{taskId}/complete")
     @Transactional
     void completeTask(
             @PathVariable("taskId") String taskId,
-            @Body CompleteTaskDto completeTaskDto
+            @Body CompleteTask completeTaskDto
     ) {
         final var task = this.taskRepository.findOne(TaskRepository.Specifications.isOpen().and(TaskRepository.Specifications.id(taskId)));
-        task.updateComment(completeTaskDto.comment());
+        task.updateComment(completeTaskDto.getComment());
         task.submit();
         this.taskRepository.save(task);
     }

@@ -18,4 +18,6 @@ open module conditions.spring {
     requires io.micronaut.data.data_model;
     requires io.micronaut.runtime;
     requires io.micronaut.data.data_tx;
+
+    requires com.fasterxml.jackson.annotation;
 }
