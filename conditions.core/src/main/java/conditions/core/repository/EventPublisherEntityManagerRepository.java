@@ -21,6 +21,8 @@ public class EventPublisherEntityManagerRepository<T> extends EntityManagerRepos
 
     @Override
     public void save(T entity) {
+        super.save(entity);
+
         if (entity instanceof Aggregate aggregate) {
             Event event;
             //handling before or after saving ?
@@ -28,7 +30,6 @@ public class EventPublisherEntityManagerRepository<T> extends EntityManagerRepos
                 this.eventBus.publish(event);
             }
         }
-        super.save(entity);
     }
 
 }

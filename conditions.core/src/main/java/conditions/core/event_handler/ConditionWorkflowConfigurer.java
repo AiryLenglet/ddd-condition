@@ -2,12 +2,14 @@ package conditions.core.event_handler;
 
 import conditions.core.event.EventBus;
 import conditions.core.event.TaskEvent;
-import conditions.core.event.approval.AskedChangeEvent;
-import conditions.core.event.approval.ConditionAcceptedEvent;
+import conditions.core.event.approval.*;
+import conditions.core.event.condition.ConditionCreatedEvent;
 import conditions.core.event.condition.ConditionDiscardedEvent;
 import conditions.core.event.condition.ConditionOpenedEvent;
+import conditions.core.event.condition.ConditionSetupedEvent;
 import conditions.core.event.fulfillment.*;
 import conditions.core.model.*;
+import conditions.core.model.task.*;
 import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.FulfillmentRepository;
 import conditions.core.repository.TaskRepository;
@@ -59,8 +61,29 @@ public class ConditionWorkflowConfigurer {
 
         /* APPROVAL */
         this.eventBus.subscribe(
-                ConditionAcceptedEvent.class,
+                ConditionCreatedEvent.class,
+                event -> this.fulfillmentRepository.save(Fulfillment.createApproval(event.conditionId()))
+        );
+
+        this.eventBus.subscribe(
+                ApprovalOpenedEvent.class,
                 event -> {
+                    final var condition = condition(event.conditionId());
+                    this.taskRepository.save(new ConditionSetupTask(event.conditionId(), event.fulfillmentId(), condition.getImposer()));
+                }
+        );
+
+        this.eventBus.subscribe(
+                ConditionSetupedEvent.class,
+                nextTask((c, e) -> new ApprovalTask(e.conditionId(), e.fulfillmentId(), c.getOwner(), e.taskId()))
+        );
+
+        this.eventBus.subscribe(
+                ApprovalAcceptedEvent.class,
+                event -> {
+                    final var approval = fulfillment(event.fulfillmentId());
+                    approval.finished();
+                    this.fulfillmentRepository.save(approval);
                     final var condition = condition(event.conditionId());
                     condition.open();
                     this.conditionRepository.save(condition);
@@ -69,12 +92,45 @@ public class ConditionWorkflowConfigurer {
 
         this.eventBus.subscribe(
                 ConditionOpenedEvent.class,
-                event -> this.fulfillmentRepository.save(condition(event.getConditionId()).startNewFulfillment())
+                event -> this.fulfillmentRepository.save(condition(event.conditionId()).startNewFulfillment())
         );
 
         this.eventBus.subscribe(
-                AskedChangeEvent.class,
-                nextTask((c, e) -> new ConditionSetupTask(e.conditionId(), e.fulfillmentId(), c.getOwner().getPid(), e.taskId()))
+                ApprovalAskedChangeEvent.class,
+                nextTask((c, e) -> new ConditionSetupTask(e.conditionId(), e.fulfillmentId(), c.getImposer(), e.taskId()))
+        );
+
+        this.eventBus.subscribe(
+                ApprovalRejectedEvent.class,
+                nextTask((c, e) -> new RefusalReviewTask(e.conditionId(), e.fulfillmentId(), c.getImposer(), e.taskId()))
+        );
+
+        this.eventBus.subscribe(
+                ChangeReviewEscalatedEvent.class,
+                nextTask((c, e) -> new EscalationTask(e.conditionId(), e.fulfillmentId(), c.getSupervisor(), e.taskId()))
+        );
+
+        this.eventBus.subscribe(
+                RefusalReviewEscalatedEvent.class,
+                nextTask((c, e) -> new EscalationTask(e.conditionId(), e.fulfillmentId(), c.getSupervisor(), e.taskId()))
+        );
+
+        this.eventBus.subscribe(
+                EscalationResolvedEvent.class,
+                nextTask((c, e) -> new ConditionSetupTask(e.conditionId(), e.fulfillmentId(), c.getSupervisor(), e.taskId()))
+        );
+
+        this.eventBus.subscribe(
+                ChangeReviewDiscardedEvent.class,
+                event -> cancel(event.conditionId())
+        );
+        this.eventBus.subscribe(
+                RefusalReviewDiscardedEvent.class,
+                event -> cancel(event.conditionId())
+        );
+        this.eventBus.subscribe(
+                EscalationDiscardedEvent.class,
+                event -> cancel(event.conditionId())
         );
 
         /* FULFILLMENT */
@@ -83,7 +139,7 @@ public class ConditionWorkflowConfigurer {
                 new EventBus.Handler<FulfillmentOpenedEvent>() {
                     @Override
                     public void handle(FulfillmentOpenedEvent event) {
-                        nextTask((c, e) -> new FulfillmentTask(c.getConditionId(), e.fulfillmentId(), c.getImposer().getPid())).handle(new TaskEvent() {
+                        nextTask((c, e) -> new FulfillmentTask(c.getConditionId(), e.fulfillmentId(), c.getImposer())).handle(new TaskEvent() {
                             @Override
                             public TaskId taskId() {
                                 return null;
@@ -91,12 +147,12 @@ public class ConditionWorkflowConfigurer {
 
                             @Override
                             public FulfillmentId fulfillmentId() {
-                                return event.getFulfillmentId();
+                                return event.fulfillmentId();
                             }
 
                             @Override
                             public ConditionId conditionId() {
-                                return event.getConditionId();
+                                return event.conditionId();
                             }
                         });
                     }
@@ -104,8 +160,18 @@ public class ConditionWorkflowConfigurer {
         );
 
         this.eventBus.subscribe(
+                ConditionFulfilledEvent.class,
+                nextTask((c, e) -> new VerificationTask(c.getConditionId(), e.fulfillmentId(), c.getImposer(), e.taskId()))
+        );
+
+        this.eventBus.subscribe(
+                FulfillmentReviewedEvent.class,
+                event -> close(fulfillment(event.fulfillmentId()))
+        );
+
+        this.eventBus.subscribe(
                 FulfillmentVerificationAskedForChangeEvent.class,
-                nextTask((c, e) -> new FulfillmentTask(c.getConditionId(), e.fulfillmentId(), c.getImposer().getPid()))
+                nextTask((c, e) -> new FulfillmentTask(c.getConditionId(), e.fulfillmentId(), c.getImposer()))
         );
 
         this.eventBus.subscribe(
@@ -114,14 +180,12 @@ public class ConditionWorkflowConfigurer {
                     final var fulfillment = fulfillment(event.fulfillmentId());
                     if (fulfillment.isFulfillmentReviewRequired()) {
                         final var condition = condition(event.conditionId());
-                        this.taskRepository.save(new ReviewTask(event.conditionId(), event.fulfillmentId(), condition.getImposer().getPid(), event.taskId()));
+                        this.taskRepository.save(new ReviewTask(event.conditionId(), event.fulfillmentId(), condition.getImposer(), event.taskId()));
                     } else {
                         close(fulfillment);
                     }
                 }
         );
-
-        this.eventBus.subscribe(FulfillmentReviewedEvent.class, event -> close(fulfillment(event.fulfillmentId())));
 
         this.eventBus.subscribe(FulfillmentFinishedEvent.class, event -> {
             final var condition = condition(event.conditionId());
@@ -141,6 +205,15 @@ public class ConditionWorkflowConfigurer {
     private void cancel(Fulfillment fulfillment) {
         fulfillment.cancel();
         fulfillmentRepository.save(fulfillment);
+    }
+
+    private void cancel(Condition condition) {
+        condition.cancel();
+        conditionRepository.save(condition);
+    }
+
+    private void cancel(ConditionId conditionId) {
+        cancel(condition(conditionId));
     }
 
     private void close(Fulfillment fulfillment) {

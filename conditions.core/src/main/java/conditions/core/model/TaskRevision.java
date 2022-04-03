@@ -1,5 +1,7 @@
 package conditions.core.model;
 
+import conditions.core.model.task.Task;
+
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;

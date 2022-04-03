@@ -1,6 +1,7 @@
-package conditions.core.model;
+package conditions.core.model.task;
 
 import conditions.common.util.Validate;
+import conditions.core.model.*;
 
 import javax.persistence.*;
 

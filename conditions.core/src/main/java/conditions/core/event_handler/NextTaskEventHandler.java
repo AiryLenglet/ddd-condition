@@ -3,7 +3,7 @@ package conditions.core.event_handler;
 import conditions.core.event.EventBus;
 import conditions.core.event.TaskEvent;
 import conditions.core.model.Condition;
-import conditions.core.model.Task;
+import conditions.core.model.task.Task;
 import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.TaskRepository;
 

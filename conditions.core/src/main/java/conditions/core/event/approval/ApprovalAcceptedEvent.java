@@ -5,7 +5,7 @@ import conditions.core.model.ConditionId;
 import conditions.core.model.FulfillmentId;
 import conditions.core.model.TaskId;
 
-public record ConditionRejectedEvent(
+public record ApprovalAcceptedEvent(
         ConditionId conditionId,
         FulfillmentId fulfillmentId,
         TaskId taskId

@@ -1,27 +1,12 @@
 package conditions.core.event.condition;
 
+import conditions.core.event.ConditionEvent;
 import conditions.core.model.ConditionId;
+import conditions.core.model.Pid;
 
-public class OwnerChangedEvent extends ConditionEvent {
-
-    private final String previousOwner;
-    private final String newOwner;
-
-    public OwnerChangedEvent(
-            String previousOwner,
-            String newOwner,
-            ConditionId conditionId
-    ) {
-        super(conditionId);
-        this.previousOwner = previousOwner;
-        this.newOwner = newOwner;
-    }
-
-    public String getPreviousOwner() {
-        return previousOwner;
-    }
-
-    public String getNewOwner() {
-        return newOwner;
-    }
+public record OwnerChangedEvent(
+        Pid previousOwner,
+        Pid newOwner,
+        ConditionId conditionId
+) implements ConditionEvent {
 }

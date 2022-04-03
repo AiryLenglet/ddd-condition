@@ -4,6 +4,7 @@ import conditions.context.UserProvider;
 import conditions.core.event.EventBus;
 import conditions.core.factory.Clock;
 import conditions.core.model.*;
+import conditions.core.model.task.Task;
 import conditions.core.repository.*;
 import conditions.iam.model.User;
 import conditions.iam.repository.IamConditionRepository;

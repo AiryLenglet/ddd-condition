@@ -1,8 +1,12 @@
-package conditions.core.model;
+package conditions.core.model.task;
 
 import conditions.common.util.Validate;
 import conditions.core.event.fulfillment.FulfillmentReviewAskedForChangeEvent;
-import conditions.core.event.fulfillment.FulfillmentVerifiedEvent;
+import conditions.core.event.fulfillment.FulfillmentReviewedEvent;
+import conditions.core.model.ConditionId;
+import conditions.core.model.FulfillmentId;
+import conditions.core.model.Pid;
+import conditions.core.model.TaskId;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -37,7 +41,7 @@ public class ReviewTask extends DecisionTask<ReviewTask.Decision> {
         }
 
         this.addEvent(this.outcome == Decision.ACCEPT ?
-                new FulfillmentVerifiedEvent(this.conditionId, this.fulfillmentId, this.taskId) :
+                new FulfillmentReviewedEvent(this.conditionId, this.fulfillmentId, this.taskId) :
                 new FulfillmentReviewAskedForChangeEvent(this.conditionId, this.fulfillmentId, this.taskId));
 
         super.submit();

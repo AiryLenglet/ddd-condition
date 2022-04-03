@@ -2,7 +2,7 @@ package conditions.core.repository;
 
 import conditions.core.model.ConditionId;
 import conditions.core.model.FulfillmentId;
-import conditions.core.model.Task;
+import conditions.core.model.task.Task;
 import conditions.core.model.TaskId;
 
 import java.util.stream.Stream;

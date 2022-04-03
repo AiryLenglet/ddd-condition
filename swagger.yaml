@@ -94,6 +94,8 @@ components:
           format: "uuid"
         openTask:
           $ref: "#/components/schemas/Task"
+        status:
+          type: "string"
     Task:
       type: "object"
       properties:
@@ -108,4 +110,6 @@ components:
       type: "object"
       properties:
         comment:
+          type: "string"
+        decision:
           type: "string"

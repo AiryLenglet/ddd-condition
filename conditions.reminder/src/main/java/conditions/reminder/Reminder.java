@@ -1,7 +1,7 @@
 package conditions.reminder;
 
 import conditions.core.model.Pid;
-import conditions.core.model.Task;
+import conditions.core.model.task.Task;
 import conditions.core.repository.TaskRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -16,7 +16,7 @@ public interface FulfillmentRepository {
     final class Specifications {
 
         public static Specification<Fulfillment> id(FulfillmentId fulfillmentId) {
-            return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("id"), fulfillmentId);
+            return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("fulfillmentId"), fulfillmentId);
         }
 
         public static Specification<Fulfillment> conditionId(ConditionId conditionId) {

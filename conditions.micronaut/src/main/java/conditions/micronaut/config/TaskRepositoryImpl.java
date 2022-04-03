@@ -1,7 +1,7 @@
 package conditions.micronaut.config;
 
 import conditions.core.event.EventBus;
-import conditions.core.model.Task;
+import conditions.core.model.task.Task;
 import conditions.core.repository.EventPublisherEntityManagerRepository;
 import conditions.core.repository.TaskRepository;
 

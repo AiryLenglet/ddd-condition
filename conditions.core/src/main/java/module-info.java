@@ -10,6 +10,7 @@ module conditions.core {
     exports conditions.core.repository;
     exports conditions.core.model;
     opens conditions.core.model;
+    exports conditions.core.model.task;
     exports conditions.core.use_case;
     exports conditions.core.event_handler;
 
@@ -19,4 +20,5 @@ module conditions.core {
     exports conditions.core.event.condition; // ?
     exports conditions.core.event.fulfillment;
     exports conditions.core.event.approval;
+    opens conditions.core.model.task;
 }

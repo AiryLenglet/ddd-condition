@@ -1,6 +1,10 @@
-package conditions.core.model;
+package conditions.core.model.task;
 
-import conditions.core.event.condition.ConditionSubmittedEvent;
+import conditions.core.event.condition.ConditionSetupedEvent;
+import conditions.core.model.ConditionId;
+import conditions.core.model.FulfillmentId;
+import conditions.core.model.Pid;
+import conditions.core.model.TaskId;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -37,7 +41,7 @@ public class ConditionSetupTask extends Task {
 
     @Override
     public void submit() {
-        this.addEvent(new ConditionSubmittedEvent(this.conditionId, this.taskId));
+        this.addEvent(new ConditionSetupedEvent(this.conditionId, this.fulfillmentId, this.taskId));
         super.submit();
     }
 

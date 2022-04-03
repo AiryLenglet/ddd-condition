@@ -1,7 +1,13 @@
-package conditions.core.model;
+package conditions.core.model.task;
+
+import conditions.core.model.ConditionId;
+import conditions.core.model.FulfillmentId;
+import conditions.core.model.Pid;
+import conditions.core.model.TaskId;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.lang.reflect.ParameterizedType;
 
 public abstract class DecisionTask<E extends Enum<E>> extends Task {
 
@@ -40,5 +46,12 @@ public abstract class DecisionTask<E extends Enum<E>> extends Task {
 
     public E getOutcome() {
         return outcome;
+    }
+
+    public void setOutcome(String outcome) {
+        this.outcome = Enum.valueOf(
+                (Class<E>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0],
+                outcome
+        );
     }
 }

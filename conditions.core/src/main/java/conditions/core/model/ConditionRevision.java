@@ -15,8 +15,8 @@ public class ConditionRevision {
     @AttributeOverride(name = "id", column = @Column(name = "conditionId"))
     private ConditionId conditionId;
     @Embedded
-    @AttributeOverride(name = "pid.value", column = @Column(name = "owner"))
-    private Owner owner;
+    @AttributeOverride(name = "value", column = @Column(name = "owner"))
+    private Pid owner;
     private Long version;
     private Instant auditTime;
 
@@ -25,7 +25,7 @@ public class ConditionRevision {
 
     public ConditionRevision(
             ConditionId conditionId,
-            Owner owner,
+            Pid owner,
             Long version,
             Instant auditTime
     ) {
@@ -43,7 +43,7 @@ public class ConditionRevision {
         return conditionId;
     }
 
-    public Owner getOwner() {
+    public Pid getOwner() {
         return owner;
     }
 

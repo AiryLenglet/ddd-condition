@@ -1,7 +1,11 @@
 package conditions.micronaut.controller;
 
 import conditions.api.model.CompleteTask;
-import conditions.core.model.*;
+import conditions.core.model.Condition;
+import conditions.core.model.ConditionRevision;
+import conditions.core.model.Country;
+import conditions.core.model.Pid;
+import conditions.core.model.task.DecisionTask;
 import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.ConditionRevisionRepository;
 import conditions.core.repository.FulfillmentRepository;
@@ -33,35 +37,15 @@ public class TaskController {
         this.conditionRevisionRepository = conditionRevisionRepository;
     }
 
-    @Get
-    @Transactional
-    Stream<Task> test() {
-        final var task = new FulfillmentTask(new ConditionId(), new FulfillmentId(), new Pid("123456"));
-        task.updateComment("meow meow");
-        this.taskRepository.save(task);
-        return this.taskRepository.findAll(TaskRepository.Specifications.isOpen());
-    }
-
-    @Get("/conditions")
-    @Transactional
-    Stream<Condition> conditions() {
-        final var condition = new Condition("TYPE");
-        condition.setImposer(new Imposer(new Pid("222222")));
-        this.conditionRepository.save(condition);
-
-        this.fulfillmentRepository.save(condition.startNewFulfillment());
-
-        return this.conditionRepository.findAll(ConditionRepository.Specifications.all());
-    }
-
     @Post("/conditions")
     @Status(HttpStatus.CREATED)
     @Transactional
     conditions.api.model.ConditionId createCondition() {
         new conditions.api.model.Condition();
 
-        final var condition = new Condition("TYPE");
-        condition.setImposer(new Imposer(new Pid("222222")));
+        final var condition = new Condition("TYPE", new Pid("222222"));
+        condition.changeOwner("333333");
+        condition.setBookingLocation(new Country("FR"));
         this.conditionRepository.save(condition);
 
         return new conditions.api.model.ConditionId()
@@ -75,6 +59,7 @@ public class TaskController {
         final var openTask = this.taskRepository.findAll(TaskRepository.Specifications.isOpen().and(TaskRepository.Specifications.conditionId(conditionId)));
         return new conditions.api.model.Condition()
                 .id(UUID.fromString(condition.getConditionId().getId()))
+                .status(condition.getStatus().name())
                 .openTask(openTask.findFirst()
                         .map(t -> new conditions.api.model.Task()
                                 .id(UUID.fromString(t.getTaskId().getId()))
@@ -82,17 +67,6 @@ public class TaskController {
                         )
                         .orElse(null)
                 );
-    }
-
-    @Put("/conditions/{conditionId}/start")
-    @Transactional
-    void startCondition(@PathVariable("conditionId") String conditionId) {
-        final var id = new ConditionId(conditionId);
-        final var condition = this.conditionRepository.findOne(ConditionRepository.Specifications.conditionId(id));
-
-        final var fulfillment = condition.startNewFulfillment();
-        this.fulfillmentRepository.save(fulfillment);
-
     }
 
     @Put("/conditions/{conditionId}/discard")
@@ -103,17 +77,6 @@ public class TaskController {
         this.conditionRepository.save(condition);
     }
 
-    @Get("/conditions/up")
-    @Transactional
-    void updateConditions() {
-        this.conditionRepository.findAll(ConditionRepository.Specifications.all())
-                .map(c -> {
-                    c.changeOwner("123456");
-                    return c;
-                })
-                .forEach(c -> this.conditionRepository.save(c));
-    }
-
     @Put("/tasks/{taskId}/complete")
     @Transactional
     void completeTask(
@@ -122,6 +85,9 @@ public class TaskController {
     ) {
         final var task = this.taskRepository.findOne(TaskRepository.Specifications.isOpen().and(TaskRepository.Specifications.id(taskId)));
         task.updateComment(completeTaskDto.getComment());
+        if (task instanceof DecisionTask<?> decisionTask) {
+            decisionTask.setOutcome(completeTaskDto.getDecision());
+        }
         task.submit();
         this.taskRepository.save(task);
     }

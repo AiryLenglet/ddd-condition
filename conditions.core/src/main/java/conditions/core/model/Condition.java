@@ -1,12 +1,13 @@
 package conditions.core.model;
 
-import conditions.common.util.Validate;
 import conditions.core.event.condition.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import java.util.Objects;
+
+import static conditions.common.util.Validate.notNull;
 
 @Entity
 public class Condition extends Aggregate {
@@ -19,15 +20,20 @@ public class Condition extends Aggregate {
     private Status status = Status.DRAFT;
     private String type;
     @Embedded
-    @AttributeOverride(name = "pid.value", column = @Column(name = "owner"))
-    private Owner owner;
+    @AttributeOverride(name = "value", column = @Column(name = "owner"))
+    private Pid owner;
     @Embedded
-    @AttributeOverride(name = "pid.value", column = @Column(name = "imposer"))
-    private Imposer imposer;
+    @AttributeOverride(name = "value", column = @Column(name = "imposer"))
+    private Pid imposer;
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "supervisor"))
+    private Pid supervisor;
     private boolean fulfillmentReviewRequired = true;
     private boolean isRecurring = false;
     @Embedded
     private Country bookingLocation;
+    @Enumerated(EnumType.STRING)
+    private Classification classification = Classification.ASSET;
     @Version
     private Long version;
 
@@ -35,8 +41,13 @@ public class Condition extends Aggregate {
         //package-private for hibernate
     }
 
-    public Condition(String type) {
-        this.type = type;
+    public Condition(
+            String type,
+            Pid imposer
+    ) {
+        this.type = notNull(type);
+        this.imposer = notNull(imposer);
+        this.addEvent(new ConditionCreatedEvent(this.getConditionId()));
     }
 
     public ConditionId getConditionId() {
@@ -47,24 +58,31 @@ public class Condition extends Aggregate {
         return type;
     }
 
-    public Owner getOwner() {
+    public Pid getOwner() {
         return owner;
     }
 
-    public Imposer getImposer() {
-        return imposer;
+    public Pid getSupervisor() {
+        return supervisor;
     }
 
-    public void setImposer(Imposer imposer) {
-        this.imposer = imposer;
+    public Pid getImposer() {
+        return imposer;
     }
 
     public Country getBookingLocation() {
         return bookingLocation;
     }
 
+    public void setBookingLocation(Country bookingLocation) {
+        this.bookingLocation = bookingLocation;
+    }
+
     public Fulfillment startNewFulfillment() {
-        return new Fulfillment(this.conditionId, this.fulfillmentReviewRequired);
+        if (this.status != Status.OPEN) {
+            throw new IllegalStateException("Cannot open fulfillment if condition is not OPEN");
+        }
+        return Fulfillment.createFulfillment(this.conditionId, this.fulfillmentReviewRequired);
     }
 
     public boolean isRecurring() {
@@ -88,9 +106,9 @@ public class Condition extends Aggregate {
         //todo: block update when condition is OPEN, PENDING ?
         LOGGER.info("Changing owner in condition {} to {}", this.conditionId, aPid);
         if (this.status == Status.PENDING) {
-            this.addEvent(new OwnerChangedEvent(this.owner.getPid().getValue(), aPid, this.conditionId));
+            this.addEvent(new OwnerChangedEvent(this.owner, new Pid(aPid), this.conditionId));
         }
-        this.owner = new Owner(new Pid(aPid));
+        this.owner = new Pid(aPid);
     }
 
     public void retire() {
@@ -133,13 +151,16 @@ public class Condition extends Aggregate {
     }
 
     public void open() {
+        /*
         if (this.status != Status.PENDING) {
             throw new IllegalArgumentException();
         }
+
+         */
         LOGGER.info("Opening condition {}", this.conditionId);
 
-        Validate.notNull(this.owner, () -> new IllegalArgumentException("Owner cannot be null"));
-        Validate.notNull(this.bookingLocation, () -> new IllegalArgumentException("Booking location cannot be null"));
+        notNull(this.owner, () -> new IllegalArgumentException("Owner cannot be null"));
+        notNull(this.bookingLocation, () -> new IllegalArgumentException("Booking location cannot be null"));
 
         this.status = Status.OPEN;
         this.addEvent(new ConditionOpenedEvent(this.conditionId));
@@ -153,6 +174,11 @@ public class Condition extends Aggregate {
         RETIRED,
         CANCELLED,
         DISCARDED
+    }
+
+    public enum Classification {
+        ASSET,
+        INVESTMENT
     }
 
     @Override

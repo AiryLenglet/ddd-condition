@@ -1,9 +1,10 @@
-package conditions.core.model;
+package conditions.core.model.task;
 
 import conditions.common.util.Validate;
-import conditions.core.event.approval.AskedChangeEvent;
-import conditions.core.event.approval.ConditionAcceptedEvent;
-import conditions.core.event.approval.ConditionRejectedEvent;
+import conditions.core.event.approval.ApprovalAskedChangeEvent;
+import conditions.core.event.approval.ApprovalAcceptedEvent;
+import conditions.core.event.approval.ApprovalRejectedEvent;
+import conditions.core.model.*;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -38,9 +39,9 @@ public class ApprovalTask extends DecisionTask<ApprovalTask.Decision> {
         }
 
         this.addEvent(switch (this.outcome) {
-            case ACCEPT -> new ConditionAcceptedEvent(this.conditionId, this.fulfillmentId, this.taskId);
-            case REJECT -> new ConditionRejectedEvent(this.conditionId, this.fulfillmentId, this.taskId);
-            case ASK_FOR_CHANGE -> new AskedChangeEvent(this.conditionId, this.fulfillmentId, this.taskId);
+            case ACCEPT -> new ApprovalAcceptedEvent(this.conditionId, this.fulfillmentId, this.taskId);
+            case REJECT -> new ApprovalRejectedEvent(this.conditionId, this.fulfillmentId, this.taskId);
+            case ASK_FOR_CHANGE -> new ApprovalAskedChangeEvent(this.conditionId, this.fulfillmentId, this.taskId);
         });
 
         super.submit();

@@ -1,6 +1,7 @@
 package conditions.core.use_case;
 
 import conditions.core.model.Condition;
+import conditions.core.model.Pid;
 import conditions.core.repository.ConditionRepository;
 
 import javax.transaction.Transactional;
@@ -17,7 +18,7 @@ public class CreateConditionUseCase {
 
     @Transactional
     public Response execute() {
-        final var condition = new Condition("transaction");
+        final var condition = new Condition("transaction", new Pid("222222"));
         this.conditionRepository.save(condition);
         return new Response(
                 condition.getConditionId().getId()

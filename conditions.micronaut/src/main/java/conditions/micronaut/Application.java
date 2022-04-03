@@ -1,12 +1,21 @@
 package conditions.micronaut;
 
 import conditions.core.model.*;
+import conditions.core.model.task.*;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.annotation.TypeHint;
 import io.micronaut.runtime.Micronaut;
 
 @Introspected(classes = {
+        ApprovalTask.class,
+        ChangeReviewTask.class,
+        ConditionSetupTask.class,
+        EscalationTask.class,
         FulfillmentTask.class,
+        RefusalReviewTask.class,
+        ReviewTask.class,
+        VerificationTask.class,
+
         Condition.class,
         ConditionRevision.class,
         Fulfillment.class,
@@ -18,12 +27,14 @@ import io.micronaut.runtime.Micronaut;
                 Condition.class,
                 ConditionId.class,
                 Condition.Status.class,
+                Condition.Classification.class,
                 ConditionRevision.class,
                 ConditionRevisionId.class,
 
                 Fulfillment.class,
                 FulfillmentId.class,
                 Fulfillment.Status.class,
+                Fulfillment.Type.class,
 
                 Task.class,
                 TaskId.class,
@@ -31,13 +42,18 @@ import io.micronaut.runtime.Micronaut;
                 TaskRevision.class,
                 TaskRevisionId.class,
 
+                ApprovalTask.class,
+                ChangeReviewTask.class,
+                ConditionSetupTask.class,
+                EscalationTask.class,
                 FulfillmentTask.class,
+                RefusalReviewTask.class,
+                ReviewTask.class,
+                VerificationTask.class,
 
                 Pid.class,
                 UuidId.class,
                 Country.class,
-                Imposer.class,
-                Owner.class,
 
                 conditions.api.model.ConditionId.class,
                 conditions.api.model.Condition.class,

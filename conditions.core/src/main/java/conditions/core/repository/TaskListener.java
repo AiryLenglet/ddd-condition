@@ -1,9 +1,9 @@
 package conditions.core.repository;
 
 import conditions.core.factory.Clock;
-import conditions.core.model.DecisionTask;
 import conditions.core.model.TaskRevision;
-import conditions.core.model.Task;
+import conditions.core.model.task.DecisionTask;
+import conditions.core.model.task.Task;
 import jakarta.inject.Singleton;
 
 import javax.persistence.PostPersist;
@@ -34,9 +34,16 @@ public class TaskListener {
                 task.getStatus(),
                 task.getComment(),
                 task.getAssignee(),
-                task instanceof DecisionTask decisionTask ? decisionTask.getOutcome().name() : null,
+                extractOutcome(task),
                 task.getVersion(),
                 this.clock.now()
         ));
+    }
+
+    private String extractOutcome(Task task) {
+        if (task instanceof DecisionTask decisionTask && decisionTask.getOutcome() != null) {
+            return decisionTask.getOutcome().name();
+        }
+        return null;
     }
 }

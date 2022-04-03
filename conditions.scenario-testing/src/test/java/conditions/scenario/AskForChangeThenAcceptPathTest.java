@@ -11,9 +11,9 @@ import java.io.IOException;
 import static io.restassured.RestAssured.given;
 
 @ExtendWith({MicronautServerFixtureExtension.class})
-class HappyPathTest {
+class AskForChangeThenAcceptPathTest {
 
-    @DisplayName("Happy path scenario")
+    @DisplayName("Ask for a change then accept path scenario")
     @Test
     void test() throws IOException, InterruptedException {
 
@@ -47,7 +47,44 @@ class HappyPathTest {
                 .contentType(ContentType.JSON)
                 .body("""
                         {
-                            "comment": "that's great",
+                            "comment": "change something please",
+                            "decision": "ASK_FOR_CHANGE"
+                        }
+                        """)
+                .when()
+                .put("/tasks/" + currentTaskId + "/complete")
+                .then()
+                .statusCode(200);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/conditions/" + conditionId)
+                .then()
+                .statusCode(200)
+                .body("status", Matchers.is("DRAFT"));
+
+        /* CONDITION SETUP */
+        currentTaskId = getCurrentTaskId(conditionId);
+        given()
+                .contentType(ContentType.JSON)
+                .body("""
+                        {
+                            "comment": "that's great"
+                        }
+                        """)
+                .when()
+                .put("/tasks/" + currentTaskId + "/complete")
+                .then()
+                .statusCode(200);
+
+        /* APPROVAL */
+        currentTaskId = getCurrentTaskId(conditionId);
+        given()
+                .contentType(ContentType.JSON)
+                .body("""
+                        {
+                            "comment": "ok now",
                             "decision": "ACCEPT"
                         }
                         """)
@@ -63,56 +100,6 @@ class HappyPathTest {
                 .then()
                 .statusCode(200)
                 .body("status", Matchers.is("OPEN"));
-
-        /* FULFILLMENT */
-        currentTaskId = getCurrentTaskId(conditionId);
-        given()
-                .contentType(ContentType.JSON)
-                .body("""
-                        {
-                            "comment": "ID card is valid"
-                        }
-                        """)
-                .when()
-                .put("/tasks/" + currentTaskId + "/complete")
-                .then()
-                .statusCode(200);
-
-        /* VERIFICATION */
-        currentTaskId = getCurrentTaskId(conditionId);
-        given()
-                .contentType(ContentType.JSON)
-                .body("""
-                        {
-                            "decision": "ACCEPT"
-                        }
-                        """)
-                .when()
-                .put("/tasks/" + currentTaskId + "/complete")
-                .then()
-                .statusCode(200);
-
-        /* REVIEW */
-        currentTaskId = getCurrentTaskId(conditionId);
-        given()
-                .contentType(ContentType.JSON)
-                .body("""
-                        {
-                            "decision": "ACCEPT"
-                        }
-                        """)
-                .when()
-                .put("/tasks/" + currentTaskId + "/complete")
-                .then()
-                .statusCode(200);
-
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .get("/conditions/" + conditionId)
-                .then()
-                .statusCode(200)
-                .body("status", Matchers.is("DONE"));
     }
 
     private String getCurrentTaskId(Object conditionId) {
