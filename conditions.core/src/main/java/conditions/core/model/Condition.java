@@ -36,6 +36,8 @@ public class Condition extends Aggregate {
     private Classification classification = Classification.ASSET;
     @Version
     private Long version;
+    @Embedded
+    private Metadata metadata = new Metadata();
 
     Condition() {
         //package-private for hibernate
@@ -99,6 +101,11 @@ public class Condition extends Aggregate {
 
     public Long getVersion() {
         return version;
+    }
+
+    public Metadata getMetadata() {
+        this.metadata.setCondition(this);
+        return metadata;
     }
 
     public void changeOwner(String aPid) {
@@ -193,4 +200,5 @@ public class Condition extends Aggregate {
     public int hashCode() {
         return Objects.hash(conditionId);
     }
+
 }

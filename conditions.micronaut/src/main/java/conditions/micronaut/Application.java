@@ -18,11 +18,16 @@ import io.micronaut.runtime.Micronaut;
 
         Condition.class,
         ConditionRevision.class,
+        Metadata.class,
         Fulfillment.class,
         TaskRevision.class
 })
 
 @TypeHint(
+        typeNames = {
+          "conditions.core.model.Metadata$Data",
+          "conditions.core.model.Metadata$Type"
+        },
         value = {
                 Condition.class,
                 ConditionId.class,
@@ -30,6 +35,7 @@ import io.micronaut.runtime.Micronaut;
                 Condition.Classification.class,
                 ConditionRevision.class,
                 ConditionRevisionId.class,
+                Metadata.class,
 
                 Fulfillment.class,
                 FulfillmentId.class,
@@ -58,7 +64,9 @@ import io.micronaut.runtime.Micronaut;
                 conditions.api.model.ConditionId.class,
                 conditions.api.model.Condition.class,
                 conditions.api.model.CompleteTask.class,
-                conditions.api.model.Task.class
+                conditions.api.model.Task.class,
+
+                EncryptionConverter.class,
         },
         accessType = {
                 TypeHint.AccessType.ALL_DECLARED_CONSTRUCTORS,

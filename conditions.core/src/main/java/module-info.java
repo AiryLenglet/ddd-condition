@@ -13,6 +13,7 @@ module conditions.core {
     exports conditions.core.model.task;
     exports conditions.core.use_case;
     exports conditions.core.event_handler;
+    exports conditions.core.service;
 
     exports conditions.core.factory;
 

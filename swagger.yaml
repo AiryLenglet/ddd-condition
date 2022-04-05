@@ -96,6 +96,19 @@ components:
           $ref: "#/components/schemas/Task"
         status:
           type: "string"
+        metadata:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Metadata"
+    Metadata:
+      type: "object"
+      properties:
+        key:
+          type: "string"
+        type:
+          type: "string"
+        value:
+          type: "string"
     Task:
       type: "object"
       properties:

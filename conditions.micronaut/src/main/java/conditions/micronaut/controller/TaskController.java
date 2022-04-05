@@ -1,10 +1,7 @@
 package conditions.micronaut.controller;
 
 import conditions.api.model.CompleteTask;
-import conditions.core.model.Condition;
-import conditions.core.model.ConditionRevision;
-import conditions.core.model.Country;
-import conditions.core.model.Pid;
+import conditions.core.model.*;
 import conditions.core.model.task.DecisionTask;
 import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.ConditionRevisionRepository;
@@ -15,6 +12,7 @@ import io.micronaut.http.annotation.*;
 
 import javax.transaction.Transactional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Controller
@@ -60,6 +58,12 @@ public class TaskController {
         return new conditions.api.model.Condition()
                 .id(UUID.fromString(condition.getConditionId().getId()))
                 .status(condition.getStatus().name())
+                .metadata(condition.getMetadata().getData().stream()
+                        .map(d -> new conditions.api.model.Metadata()
+                                .key(d.getKey())
+                                .type(d.getType().name())
+                                .value(d.getValue()))
+                        .collect(Collectors.toList()))
                 .openTask(openTask.findFirst()
                         .map(t -> new conditions.api.model.Task()
                                 .id(UUID.fromString(t.getTaskId().getId()))
@@ -74,6 +78,14 @@ public class TaskController {
     void discardCondition(@PathVariable("conditionId") String conditionId) {
         final var condition = this.conditionRepository.findOne(ConditionRepository.Specifications.conditionId(conditionId));
         condition.discard();
+        this.conditionRepository.save(condition);
+    }
+
+    @Put("/conditions/{conditionId}")
+    @Transactional
+    void updateCondition(@PathVariable("conditionId") String conditionId) {
+        final var condition = this.conditionRepository.findOne(ConditionRepository.Specifications.conditionId(conditionId));
+        condition.getMetadata().set("CID", Metadata.Type.CLIENT, "56339");
         this.conditionRepository.save(condition);
     }
 
