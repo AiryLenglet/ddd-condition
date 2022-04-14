@@ -1,6 +1,6 @@
 package conditions.micronaut.config;
 
-import conditions.core.event.EventBus;
+import conditions.core.event.DomainEventBus;
 import conditions.core.event_handler.ConditionWorkflowConfigurer;
 import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.FulfillmentRepository;
@@ -15,9 +15,9 @@ public class ConditionWorkflowConfig {
     private final ConditionRepository conditionRepository;
     private final FulfillmentRepository fulfillmentRepository;
     private final TaskRepository taskRepository;
-    private final EventBus eventBus;
+    private final DomainEventBus eventBus;
 
-    public ConditionWorkflowConfig(ConditionRepository conditionRepository, FulfillmentRepository fulfillmentRepository, TaskRepository taskRepository, EventBus eventBus) {
+    public ConditionWorkflowConfig(ConditionRepository conditionRepository, FulfillmentRepository fulfillmentRepository, TaskRepository taskRepository, DomainEventBus eventBus) {
         this.conditionRepository = conditionRepository;
         this.fulfillmentRepository = fulfillmentRepository;
         this.taskRepository = taskRepository;

@@ -1,6 +1,6 @@
 package conditions.core.event_handler;
 
-import conditions.core.event.EventBus;
+import conditions.core.event.Handler;
 import conditions.core.event.TaskEvent;
 import conditions.core.model.Condition;
 import conditions.core.model.task.Task;
@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
 
 import static conditions.core.repository.ConditionRepository.Specifications.conditionId;
 
-public class NextTaskEventHandler<T extends TaskEvent> implements EventBus.Handler<T> {
+public class NextTaskEventHandler<T extends TaskEvent> implements Handler<T> {
 
     private final ConditionRepository conditionRepository;
     private final TaskRepository taskRepository;

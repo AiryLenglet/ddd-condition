@@ -1,6 +1,7 @@
 package conditions.core.event_handler;
 
-import conditions.core.event.EventBus;
+import conditions.core.event.DomainEventBus;
+import conditions.core.event.Handler;
 import conditions.core.event.TaskEvent;
 import conditions.core.event.approval.*;
 import conditions.core.event.condition.ConditionCreatedEvent;
@@ -27,13 +28,13 @@ public class ConditionWorkflowConfigurer {
     private final ConditionRepository conditionRepository;
     private final FulfillmentRepository fulfillmentRepository;
     private final TaskRepository taskRepository;
-    private final EventBus eventBus;
+    private final DomainEventBus eventBus;
 
     public ConditionWorkflowConfigurer(
             ConditionRepository conditionRepository,
             FulfillmentRepository fulfillmentRepository,
             TaskRepository taskRepository,
-            EventBus eventBus
+            DomainEventBus eventBus
     ) {
         this.conditionRepository = conditionRepository;
         this.fulfillmentRepository = fulfillmentRepository;
@@ -136,7 +137,7 @@ public class ConditionWorkflowConfigurer {
         /* FULFILLMENT */
         this.eventBus.subscribe(
                 FulfillmentOpenedEvent.class,
-                new EventBus.Handler<FulfillmentOpenedEvent>() {
+                new Handler<FulfillmentOpenedEvent>() {
                     @Override
                     public void handle(FulfillmentOpenedEvent event) {
                         nextTask((c, e) -> new FulfillmentTask(c.getConditionId(), e.fulfillmentId(), c.getImposer())).handle(new TaskEvent() {
