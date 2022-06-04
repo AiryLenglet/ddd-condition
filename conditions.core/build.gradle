@@ -4,6 +4,5 @@ plugins {
 
 dependencies {
     implementation project(':conditions.common')
-    implementation 'org.hibernate:hibernate-core:5.5.9.Final'
-    implementation 'jakarta.inject:jakarta.inject-api:2.0.1'
+    implementation 'org.hibernate:hibernate-core'
 }
