@@ -9,7 +9,9 @@ datasources:
     password: ''
 jpa:
   default:
-    properties.hibernate.hbm2ddl.auto: update
+    properties.hibernate:
+      hbm2ddl.auto: update
+      show_sql: true
 netty:
   default:
     allocator:

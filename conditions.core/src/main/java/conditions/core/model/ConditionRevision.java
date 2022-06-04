@@ -1,5 +1,9 @@
 package conditions.core.model;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
@@ -7,6 +11,17 @@ import java.util.Objects;
 import static conditions.common.util.Validate.notNull;
 
 @Entity
+@FilterDef(
+        name = "involvedInCondition",
+        parameters = {@ParamDef(name = "user", type = "string")},
+        defaultCondition = """
+                :user in (
+                    select c.OWNER, c.IMPOSER from condition c
+                    where c.ID = CONDITION_ID
+                )
+                """
+)
+@Filter(name = "involvedInCondition")
 public class ConditionRevision {
 
     @EmbeddedId
@@ -14,6 +29,7 @@ public class ConditionRevision {
     @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "conditionId"))
     private ConditionId conditionId;
+
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "owner"))
     private Pid owner;

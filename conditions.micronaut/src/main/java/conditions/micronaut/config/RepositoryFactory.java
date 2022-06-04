@@ -149,8 +149,8 @@ public class RepositoryFactory {
     ) {
         return new IamConditionRevisionRepository(
                 new ConditionRevisionRepositoryImpl(entityManager),
-                userProvider
-        );
+                userProvider,
+                entityManager);
     }
 
     @Bean

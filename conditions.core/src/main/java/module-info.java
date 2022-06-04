@@ -4,6 +4,7 @@ module conditions.core {
     requires java.transaction;
     requires java.persistence;
     requires jakarta.inject;
+    requires org.hibernate.orm.core;
 
     requires org.slf4j;
 

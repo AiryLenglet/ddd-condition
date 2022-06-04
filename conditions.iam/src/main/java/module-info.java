@@ -3,6 +3,7 @@ module conditions.iam {
     requires conditions.context;
 
     requires java.persistence;
+    requires org.hibernate.orm.core;
 
     exports conditions.iam.model;
     exports conditions.iam.repository;

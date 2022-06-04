@@ -20,4 +20,5 @@ open module conditions.spring {
     requires io.micronaut.data.data_tx;
 
     requires com.fasterxml.jackson.annotation;
+    requires org.hibernate.orm.core;
 }

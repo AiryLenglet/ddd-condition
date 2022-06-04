@@ -5,4 +5,5 @@ plugins {
 dependencies {
     implementation project(':conditions.core')
     implementation project(':conditions.context')
+    implementation 'org.hibernate:hibernate-core:5.5.9.Final'
 }
