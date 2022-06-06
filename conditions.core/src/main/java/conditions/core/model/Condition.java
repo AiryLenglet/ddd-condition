@@ -1,6 +1,9 @@
 package conditions.core.model;
 
 import conditions.core.event.condition.*;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +13,19 @@ import java.util.Objects;
 import static conditions.common.util.Validate.notNull;
 
 @Entity
+@FilterDef(
+        name = "crossBorder",
+        parameters = {
+                @ParamDef(name = "ASSET_LOCATION_BLACKLIST", type = "string"),
+                @ParamDef(name = "INVESTMENT_LOCATION_BLACKLIST", type = "string")
+        },
+        defaultCondition = """
+                CLASSIFICATION is null
+                or ( CLASSIFICATION = 'ASSET' and BOOKING_LOCATION not in (:ASSET_LOCATION_BLACKLIST) )
+                or ( CLASSIFICATION = 'INVESTMENT' and BOOKING_LOCATION not in (:INVESTMENT_LOCATION_BLACKLIST) )
+                """
+)
+@Filter(name = "crossBorder")
 public class Condition extends Aggregate {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Condition.class);
@@ -31,6 +47,7 @@ public class Condition extends Aggregate {
     private boolean fulfillmentReviewRequired = true;
     private boolean isRecurring = false;
     @Embedded
+    @AttributeOverride(name = "code", column = @Column(name = "booking_location"))
     private Country bookingLocation;
     @Enumerated(EnumType.STRING)
     private Classification classification = Classification.ASSET;

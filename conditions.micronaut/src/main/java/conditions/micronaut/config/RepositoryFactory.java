@@ -42,8 +42,8 @@ public class RepositoryFactory {
         return new IamConditionRepository(
                 new ConditionRepositoryImpl(eventBus, entityManager),
                 userRepository,
-                userProvider
-        );
+                userProvider,
+                entityManager);
     }
 
     @Bean

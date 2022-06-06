@@ -5,30 +5,32 @@ import conditions.core.model.Condition;
 import conditions.core.model.Country;
 import conditions.core.repository.ConditionRepository;
 import conditions.core.repository.Specification;
-import conditions.iam.cross_border.AssetManagementCrossBorderRule;
 import conditions.iam.cross_border.InvestmentCrossBorderRule;
 import conditions.iam.model.User;
+import org.hibernate.Session;
 
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Root;
+import javax.persistence.EntityManager;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static conditions.core.repository.Specification.not;
+import java.util.stream.StreamSupport;
 
 public class IamConditionRepository implements ConditionRepository {
 
     private final ConditionRepository conditionRepository;
     private final UserRepository userRepository;
     private final UserProvider userProvider;
+    private final EntityManager entityManager;
 
     public IamConditionRepository(
             ConditionRepository conditionRepository,
             UserRepository userRepository,
-            UserProvider userProvider
+            UserProvider userProvider,
+            EntityManager entityManager
     ) {
         this.conditionRepository = conditionRepository;
         this.userRepository = userRepository;
         this.userProvider = userProvider;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -45,45 +47,25 @@ public class IamConditionRepository implements ConditionRepository {
 
     @Override
     public Condition findOne(Specification<Condition> specification) {
-        final User user = this.userRepository.findById(this.userProvider.currentUser());
-        return this.conditionRepository.findOne(specification.and(crossBorder(user.location())));
+        enableCrossBorderRule();
+        return this.conditionRepository.findOne(specification);
     }
 
     @Override
     public Stream<Condition> findAll(Specification<Condition> specification) {
+        enableCrossBorderRule();
+        return this.conditionRepository.findAll(specification);
+    }
+
+    private void enableCrossBorderRule() {
         final User user = this.userRepository.findById(this.userProvider.currentUser());
-        return this.conditionRepository.findAll(specification.and(crossBorder(user.location())));
-    }
-
-    private Specification<Condition> crossBorder(Country userLocation) {
-        return hasNoBookingLocation()
-                .or(investmentCrossBorder(userLocation))
-                .or(assetManagementCrossBorder(userLocation));
-    }
-
-    private Specification<Condition> investmentCrossBorder(Country userLocation) {
-        return isInvestment()
-                .and(not((root, query, criteriaBuilder) -> bookingLocationPath(root).in(InvestmentCrossBorderRule.canNotSee(userLocation))));
-    }
-
-    private Specification<Condition> assetManagementCrossBorder(Country userLocation) {
-        return isAssetManagement()
-                .and((root, query, criteriaBuilder) -> bookingLocationPath(root).in(AssetManagementCrossBorderRule.canSee(userLocation)));
-    }
-
-    private Specification<Condition> isInvestment() {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("classification"), Condition.Classification.INVESTMENT);
-    }
-
-    private Specification<Condition> isAssetManagement() {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("classification"), Condition.Classification.ASSET);
-    }
-
-    private Specification<Condition> hasNoBookingLocation() {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.isNull(bookingLocationPath(root));
-    }
-
-    private Path<Object> bookingLocationPath(Root<Condition> root) {
-        return root.get("bookingLocation");
+        final var countryBlacklist = StreamSupport.stream(InvestmentCrossBorderRule.canNotSee(user.location()).spliterator(), false)
+                .map(Country::getCode)
+                .collect(Collectors.toSet());
+        this.entityManager.unwrap(Session.class)
+                .enableFilter("crossBorder")
+                .setParameterList("ASSET_LOCATION_BLACKLIST", countryBlacklist)
+                .setParameterList("INVESTMENT_LOCATION_BLACKLIST", countryBlacklist)
+                .validate();
     }
 }
