@@ -12,7 +12,6 @@ import io.micronaut.http.annotation.*;
 
 import javax.transaction.Transactional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Controller
@@ -53,17 +52,11 @@ public class TaskController {
     @Get("/conditions/{conditionId}")
     @Transactional
     conditions.api.model.Condition getCondition(@PathVariable("conditionId") String conditionId) {
-        final var condition = this.conditionRepository.findOne(ConditionRepository.Specifications.conditionId(conditionId));
+        final var condition = this.conditionRepository.findOne(ConditionRepository.Specifications.conditionId(conditionId), ConditionStatusProjection.class);
         final var openTask = this.taskRepository.findAll(TaskRepository.Specifications.isOpen().and(TaskRepository.Specifications.conditionId(conditionId)));
         return new conditions.api.model.Condition()
-                .id(UUID.fromString(condition.getConditionId().getId()))
-                .status(condition.getStatus().name())
-                .metadata(condition.getMetadata().getData().stream()
-                        .map(d -> new conditions.api.model.Metadata()
-                                .key(d.getKey())
-                                .type(d.getType().name())
-                                .value(d.getValue()))
-                        .collect(Collectors.toList()))
+                .id(UUID.fromString(condition.conditionId().getId()))
+                .status(condition.status().name())
                 .openTask(openTask.findFirst()
                         .map(t -> new conditions.api.model.Task()
                                 .id(UUID.fromString(t.getTaskId().getId()))

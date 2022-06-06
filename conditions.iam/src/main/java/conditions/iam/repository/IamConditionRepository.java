@@ -52,6 +52,12 @@ public class IamConditionRepository implements ConditionRepository {
     }
 
     @Override
+    public <T> T findOne(Specification<Condition> specification, Class<T> projection) {
+        enableCrossBorderRule();
+        return this.conditionRepository.findOne(specification, projection);
+    }
+
+    @Override
     public Stream<Condition> findAll(Specification<Condition> specification) {
         enableCrossBorderRule();
         return this.conditionRepository.findAll(specification);

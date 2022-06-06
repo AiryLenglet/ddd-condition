@@ -42,6 +42,11 @@ public class BusinessAuditTrailConditionRepository implements ConditionRepositor
     }
 
     @Override
+    public <T> T findOne(Specification<Condition> specification, Class<T> projection) {
+        return this.delegate.findOne(specification, projection);
+    }
+
+    @Override
     public Stream<Condition> findAll(Specification<Condition> specification) {
         LOGGER.info("findAll with specifications {}", specification);
         return this.delegate.findAll(specification);

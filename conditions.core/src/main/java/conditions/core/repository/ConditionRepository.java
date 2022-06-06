@@ -10,6 +10,8 @@ public interface ConditionRepository {
 
     Condition findOne(Specification<Condition> specification);
 
+    <T> T findOne(Specification<Condition> specification, Class<T> projection);
+
     Stream<Condition> findAll(Specification<Condition> specification);
 
     final class Specifications {

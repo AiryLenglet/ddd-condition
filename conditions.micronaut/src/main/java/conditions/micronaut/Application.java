@@ -2,6 +2,7 @@ package conditions.micronaut;
 
 import conditions.core.model.*;
 import conditions.core.model.task.*;
+import conditions.core.model.ConditionStatusProjection;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.annotation.TypeHint;
 import io.micronaut.runtime.Micronaut;
@@ -67,6 +68,8 @@ import io.micronaut.runtime.Micronaut;
                 conditions.api.model.Task.class,
 
                 EncryptionConverter.class,
+
+                ConditionStatusProjection.class
         },
         accessType = {
                 TypeHint.AccessType.ALL_DECLARED_CONSTRUCTORS,
