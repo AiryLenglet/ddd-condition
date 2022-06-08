@@ -1,6 +1,7 @@
 package conditions.core.model;
 
 import conditions.core.model.task.Task;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -12,7 +13,20 @@ import static conditions.common.util.Validate.notNull;
 public class TaskRevision {
 
     @EmbeddedId
-    private TaskRevisionId id = new TaskRevisionId();
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "pooled-lo"
+    )
+    @GenericGenerator(
+            name = "pooled-lo",
+            strategy = "conditions.core.model.EmbeddedLongIdSequenceStyleGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "condition_sequence"),
+                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
+                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "3"),
+                    @org.hibernate.annotations.Parameter(name = "optimizer", value = "pooled-lo")
+            })
+    private TaskRevisionId id;
     @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "taskId"))
     private TaskId taskId;

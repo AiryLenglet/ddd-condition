@@ -2,6 +2,7 @@ package conditions.core.model.task;
 
 import conditions.common.util.Validate;
 import conditions.core.model.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -10,6 +11,19 @@ import javax.persistence.*;
 public abstract class Task extends Aggregate {
 
     @EmbeddedId
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "pooled-lo"
+    )
+    @GenericGenerator(
+            name = "pooled-lo",
+            strategy = "conditions.core.model.EmbeddedLongIdSequenceStyleGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "condition_sequence"),
+                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
+                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "3"),
+                    @org.hibernate.annotations.Parameter(name = "optimizer", value = "pooled-lo")
+            })
     protected TaskId taskId;
     @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "conditionId"))

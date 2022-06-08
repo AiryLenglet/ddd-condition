@@ -46,7 +46,7 @@ public class TaskController {
         this.conditionRepository.save(condition);
 
         return new conditions.api.model.ConditionId()
-                .id(UUID.fromString(condition.getConditionId().getId()));
+                .id(String.valueOf(condition.getConditionId().getId()));
     }
 
     @Get("/conditions/{conditionId}")
@@ -55,11 +55,11 @@ public class TaskController {
         final var condition = this.conditionRepository.findOne(ConditionRepository.Specifications.conditionId(conditionId), ConditionStatusProjection.class);
         final var openTask = this.taskRepository.findAll(TaskRepository.Specifications.isOpen().and(TaskRepository.Specifications.conditionId(conditionId)));
         return new conditions.api.model.Condition()
-                .id(UUID.fromString(condition.conditionId().getId()))
+                .id(String.valueOf(condition.conditionId().getId()))
                 .status(condition.status().name())
                 .openTask(openTask.findFirst()
                         .map(t -> new conditions.api.model.Task()
-                                .id(UUID.fromString(t.getTaskId().getId()))
+                                .id(String.valueOf(t.getTaskId().getId()))
                                 .assignee(t.getAssignee().getValue())
                         )
                         .orElse(null)

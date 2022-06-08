@@ -85,13 +85,11 @@ components:
       properties:
         id:
           type: "string"
-          format: "uuid"
     Condition:
       type: "object"
       properties:
         id:
           type: "string"
-          format: "uuid"
         openTask:
           $ref: "#/components/schemas/Task"
         status:
@@ -114,7 +112,6 @@ components:
       properties:
         id:
           type: "string"
-          format: "uuid"
         assignee:
           type: "string"
         type:

@@ -59,7 +59,7 @@ import io.micronaut.runtime.Micronaut;
                 VerificationTask.class,
 
                 Pid.class,
-                UuidId.class,
+                LongId.class,
                 Country.class,
 
                 conditions.api.model.ConditionId.class,

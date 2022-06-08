@@ -20,9 +20,7 @@ public class CreateConditionUseCase {
     public Response execute() {
         final var condition = new Condition("transaction", new Pid("222222"));
         this.conditionRepository.save(condition);
-        return new Response(
-                condition.getConditionId().getId()
-        );
+        return new Response(String.valueOf(condition.getConditionId().getId()));
     }
 
     public static record Response(

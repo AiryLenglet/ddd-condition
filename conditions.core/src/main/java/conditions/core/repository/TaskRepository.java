@@ -24,7 +24,7 @@ public interface TaskRepository {
         }
 
         public static Specification<Task> id(String taskId) {
-            return id(new TaskId(taskId));
+            return id(new TaskId(Long.valueOf(taskId)));
         }
 
         public static Specification<Task> isOpen() {
@@ -36,7 +36,7 @@ public interface TaskRepository {
         }
 
         public static Specification<Task> fulfillmentId(String fulfillmentId) {
-            return fulfillmentId(new FulfillmentId(fulfillmentId));
+            return fulfillmentId(new FulfillmentId(Long.valueOf(fulfillmentId)));
         }
 
         public static Specification<Task> conditionId(ConditionId conditionId) {
@@ -44,7 +44,7 @@ public interface TaskRepository {
         }
 
         public static Specification<Task> conditionId(String conditionId) {
-            return conditionId(new ConditionId(conditionId));
+            return conditionId(new ConditionId(Long.valueOf(conditionId)));
         }
     }
 

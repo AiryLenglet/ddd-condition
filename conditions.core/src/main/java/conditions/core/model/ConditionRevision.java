@@ -2,6 +2,7 @@ package conditions.core.model;
 
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.ParamDef;
 
 import javax.persistence.*;
@@ -25,7 +26,20 @@ import static conditions.common.util.Validate.notNull;
 public class ConditionRevision {
 
     @EmbeddedId
-    private ConditionRevisionId id = new ConditionRevisionId();
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "pooled-lo"
+    )
+    @GenericGenerator(
+            name = "pooled-lo",
+            strategy = "conditions.core.model.EmbeddedLongIdSequenceStyleGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "condition_sequence"),
+                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
+                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "3"),
+                    @org.hibernate.annotations.Parameter(name = "optimizer", value = "pooled-lo")
+            })
+    private ConditionRevisionId id;
     @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "conditionId"))
     private ConditionId conditionId;

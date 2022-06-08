@@ -21,7 +21,7 @@ public interface ConditionRepository {
         }
 
         public static Specification<Condition> conditionId(String conditionId) {
-            return conditionId(new ConditionId(conditionId));
+            return conditionId(new ConditionId(Long.valueOf(conditionId)));
         }
 
         public static Specification<Condition> all() {

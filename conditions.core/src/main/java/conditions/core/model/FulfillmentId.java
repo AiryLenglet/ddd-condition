@@ -3,27 +3,13 @@ package conditions.core.model;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class FulfillmentId extends UuidId {
-
-    public FulfillmentId(String id) {
-        super(id);
-    }
+public class FulfillmentId extends LongId {
 
     public FulfillmentId() {
         super();
     }
 
-    public static FulfillmentId of(String id) {
-        return new FulfillmentId(id);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
+    public FulfillmentId(Long id) {
+        super(id);
     }
 }

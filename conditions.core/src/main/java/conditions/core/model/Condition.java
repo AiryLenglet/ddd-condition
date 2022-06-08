@@ -3,6 +3,7 @@ package conditions.core.model;
 import conditions.core.event.condition.*;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.ParamDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,20 @@ public class Condition extends Aggregate {
     private static final Logger LOGGER = LoggerFactory.getLogger(Condition.class);
 
     @EmbeddedId
-    private ConditionId conditionId = new ConditionId();
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "pooled-lo"
+    )
+    @GenericGenerator(
+            name = "pooled-lo",
+            strategy = "conditions.core.model.EmbeddedLongIdSequenceStyleGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "condition_sequence"),
+                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
+                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "3"),
+                    @org.hibernate.annotations.Parameter(name = "optimizer", value = "pooled-lo")
+            })
+    private ConditionId conditionId;
     @Enumerated(EnumType.STRING)
     private Status status = Status.DRAFT;
     private String type;
@@ -66,7 +80,7 @@ public class Condition extends Aggregate {
     ) {
         this.type = notNull(type);
         this.imposer = notNull(imposer);
-        this.addEvent(new ConditionCreatedEvent(this.getConditionId()));
+        this.addEvent(new ConditionCreatedEvent(this));
     }
 
     public ConditionId getConditionId() {

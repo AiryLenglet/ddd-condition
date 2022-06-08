@@ -1,6 +1,7 @@
 package conditions.core.model;
 
 import conditions.core.event.fulfillment.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -10,6 +11,19 @@ import static conditions.common.util.Validate.notNull;
 public class Fulfillment extends Aggregate {
 
     @EmbeddedId
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "pooled-lo"
+    )
+    @GenericGenerator(
+            name = "pooled-lo",
+            strategy = "conditions.core.model.EmbeddedLongIdSequenceStyleGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "condition_sequence"),
+                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
+                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "3"),
+                    @org.hibernate.annotations.Parameter(name = "optimizer", value = "pooled-lo")
+            })
     private FulfillmentId fulfillmentId;
     @Embedded
     @AttributeOverrides({
@@ -46,7 +60,7 @@ public class Fulfillment extends Aggregate {
                 false,
                 Type.APPROVAL
         );
-        approval.addEvent(new ApprovalOpenedEvent(approval.getConditionId(), approval.getFulfillmentId()));
+        approval.addEvent(new ApprovalOpenedEvent(approval));
         return approval;
     }
 
@@ -59,7 +73,7 @@ public class Fulfillment extends Aggregate {
                 fulfillmentReviewRequired,
                 Type.FULFILLMENT
         );
-        fulfillment.addEvent(new FulfillmentOpenedEvent(fulfillment.getConditionId(), fulfillment.getFulfillmentId()));
+        fulfillment.addEvent(new FulfillmentOpenedEvent(fulfillment));
         return fulfillment;
     }
 
