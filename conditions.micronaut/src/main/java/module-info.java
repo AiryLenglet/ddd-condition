@@ -1,4 +1,4 @@
-open module conditions.spring {
+open module conditions.nicronaut {
     requires conditions.core;
     requires conditions.context;
     requires conditions.iam;
@@ -10,6 +10,7 @@ open module conditions.spring {
 
     requires java.persistence;
     requires java.transaction; //to be removed
+    requires java.naming;
 
     requires io.micronaut.context;
     requires io.micronaut.inject;

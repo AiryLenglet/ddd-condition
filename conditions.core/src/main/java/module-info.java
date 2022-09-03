@@ -9,6 +9,7 @@ module conditions.core {
     requires org.slf4j;
 
     exports conditions.core.repository;
+    exports conditions.core.repository.listener;
     exports conditions.core.model;
     opens conditions.core.model;
     exports conditions.core.model.task;

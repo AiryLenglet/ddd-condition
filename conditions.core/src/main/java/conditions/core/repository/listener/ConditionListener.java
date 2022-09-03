@@ -1,8 +1,9 @@
-package conditions.core.repository;
+package conditions.core.repository.listener;
 
 import conditions.core.factory.Clock;
 import conditions.core.model.Condition;
 import conditions.core.model.ConditionRevision;
+import conditions.core.repository.ConditionRevisionRepository;
 import jakarta.inject.Singleton;
 
 import javax.persistence.PostPersist;

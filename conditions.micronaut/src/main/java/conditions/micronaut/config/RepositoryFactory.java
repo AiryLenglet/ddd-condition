@@ -1,11 +1,12 @@
 package conditions.micronaut.config;
 
 import conditions.context.UserProvider;
-import conditions.core.event.EventBus;
 import conditions.core.factory.Clock;
 import conditions.core.model.*;
 import conditions.core.model.task.Task;
 import conditions.core.repository.*;
+import conditions.core.repository.listener.ConditionListener;
+import conditions.core.repository.listener.TaskListener;
 import conditions.iam.model.User;
 import conditions.iam.repository.IamConditionRepository;
 import conditions.iam.repository.IamConditionRevisionRepository;
@@ -26,21 +27,19 @@ public class RepositoryFactory {
 
     @Bean
     public TaskRepository taskRepository(
-            EventBus eventBus,
             EntityManager entityManager
     ) {
-        return new TaskRepositoryImpl(eventBus, entityManager);
+        return new TaskRepositoryImpl(entityManager);
     }
 
     @Bean
     public ConditionRepository conditionRepository(
-            EventBus eventBus,
             EntityManager entityManager,
             UserRepository userRepository,
             UserProvider userProvider
     ) {
         return new IamConditionRepository(
-                new ConditionRepositoryImpl(eventBus, entityManager),
+                new ConditionRepositoryImpl(entityManager),
                 userRepository,
                 userProvider,
                 entityManager);
@@ -136,10 +135,9 @@ public class RepositoryFactory {
 
     @Bean
     public FulfillmentRepository fulfillmentRepository(
-            EventBus eventBus,
             EntityManager entityManager
     ) {
-        return new FulfillmentRepositoryImpl(eventBus, entityManager);
+        return new FulfillmentRepositoryImpl(entityManager);
     }
 
     @Bean

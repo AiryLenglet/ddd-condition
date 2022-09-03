@@ -3,16 +3,15 @@ package conditions.micronaut.config;
 import conditions.core.event.EventBus;
 import conditions.core.model.Condition;
 import conditions.core.repository.ConditionRepository;
-import conditions.core.repository.EventPublisherEntityManagerRepository;
+import conditions.core.repository.EntityManagerRepository;
 
 import javax.persistence.EntityManager;
 
-public class ConditionRepositoryImpl extends EventPublisherEntityManagerRepository<Condition> implements ConditionRepository {
+public class ConditionRepositoryImpl extends EntityManagerRepository<Condition> implements ConditionRepository {
 
     public ConditionRepositoryImpl(
-            EventBus eventBus,
             EntityManager entityManager
     ) {
-        super(entityManager, Condition.class, eventBus);
+        super(entityManager, Condition.class);
     }
 }

@@ -1,9 +1,10 @@
-package conditions.core.repository;
+package conditions.core.repository.listener;
 
 import conditions.core.factory.Clock;
 import conditions.core.model.TaskRevision;
 import conditions.core.model.task.DecisionTask;
 import conditions.core.model.task.Task;
+import conditions.core.repository.TaskRevisionRepository;
 import jakarta.inject.Singleton;
 
 import javax.persistence.PostPersist;
