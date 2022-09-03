@@ -6,7 +6,7 @@ import conditions.core.model.ConditionId;
 import java.util.stream.Stream;
 
 public interface ConditionRepository {
-    void save(Condition condition);
+    void persist(Condition condition);
 
     Condition findOne(Specification<Condition> specification);
 

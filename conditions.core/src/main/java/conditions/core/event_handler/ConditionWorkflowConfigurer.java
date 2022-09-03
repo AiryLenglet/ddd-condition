@@ -63,14 +63,14 @@ public class ConditionWorkflowConfigurer {
         /* APPROVAL */
         this.eventBus.subscribe(
                 ConditionCreatedEvent.class,
-                event -> this.fulfillmentRepository.save(Fulfillment.createApproval(event.conditionId()))
+                event -> this.fulfillmentRepository.persist(Fulfillment.createApproval(event.conditionId()))
         );
 
         this.eventBus.subscribe(
                 ApprovalOpenedEvent.class,
                 event -> {
                     final var condition = condition(event.conditionId());
-                    this.taskRepository.save(new ConditionSetupTask(event.conditionId(), event.fulfillmentId(), condition.getImposer()));
+                    this.taskRepository.persist(new ConditionSetupTask(event.conditionId(), event.fulfillmentId(), condition.getImposer()));
                 }
         );
 
@@ -84,16 +84,14 @@ public class ConditionWorkflowConfigurer {
                 event -> {
                     final var approval = fulfillment(event.fulfillmentId());
                     approval.finished();
-                    this.fulfillmentRepository.save(approval);
                     final var condition = condition(event.conditionId());
                     condition.open();
-                    this.conditionRepository.save(condition);
                 }
         );
 
         this.eventBus.subscribe(
                 ConditionOpenedEvent.class,
-                event -> this.fulfillmentRepository.save(condition(event.conditionId()).startNewFulfillment())
+                event -> this.fulfillmentRepository.persist(condition(event.conditionId()).startNewFulfillment())
         );
 
         this.eventBus.subscribe(
@@ -181,7 +179,7 @@ public class ConditionWorkflowConfigurer {
                     final var fulfillment = fulfillment(event.fulfillmentId());
                     if (fulfillment.isFulfillmentReviewRequired()) {
                         final var condition = condition(event.conditionId());
-                        this.taskRepository.save(new ReviewTask(event.conditionId(), event.fulfillmentId(), condition.getImposer(), event.taskId()));
+                        this.taskRepository.persist(new ReviewTask(event.conditionId(), event.fulfillmentId(), condition.getImposer(), event.taskId()));
                     } else {
                         close(fulfillment);
                     }
@@ -194,23 +192,19 @@ public class ConditionWorkflowConfigurer {
                 return;
             }
             condition.close();
-            conditionRepository.save(condition);
         });
     }
 
     private void cancel(Task task) {
         task.cancel();
-        taskRepository.save(task);
     }
 
     private void cancel(Fulfillment fulfillment) {
         fulfillment.cancel();
-        fulfillmentRepository.save(fulfillment);
     }
 
     private void cancel(Condition condition) {
         condition.cancel();
-        conditionRepository.save(condition);
     }
 
     private void cancel(ConditionId conditionId) {
@@ -219,7 +213,6 @@ public class ConditionWorkflowConfigurer {
 
     private void close(Fulfillment fulfillment) {
         fulfillment.finished();
-        this.fulfillmentRepository.save(fulfillment);
     }
 
     private Condition condition(ConditionId conditionId) {

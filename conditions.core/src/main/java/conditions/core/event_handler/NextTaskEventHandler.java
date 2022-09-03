@@ -30,6 +30,6 @@ public class NextTaskEventHandler<T extends TaskEvent> implements Handler<T> {
     @Override
     public void handle(T event) {
         final var condition = this.conditionRepository.findOne(conditionId(event.conditionId()));
-        this.taskRepository.save(this.taskProducer.apply(condition, event));
+        this.taskRepository.persist(this.taskProducer.apply(condition, event));
     }
 }

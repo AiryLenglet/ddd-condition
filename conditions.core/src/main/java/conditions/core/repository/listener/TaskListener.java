@@ -27,7 +27,7 @@ public class TaskListener {
     @PostPersist
     @PostUpdate
     public void postPersist(Task task) {
-        this.taskRevisionRepository.save(new TaskRevision(
+        this.taskRevisionRepository.persist(new TaskRevision(
                 task.getTaskId(),
                 task.getConditionId(),
                 task.getFulfillmentId(),

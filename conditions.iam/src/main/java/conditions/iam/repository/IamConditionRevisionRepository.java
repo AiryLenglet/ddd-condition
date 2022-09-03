@@ -25,8 +25,8 @@ public class IamConditionRevisionRepository implements ConditionRevisionReposito
     }
 
     @Override
-    public void save(ConditionRevision condition) {
-        this.delegate.save(condition);
+    public void persist(ConditionRevision condition) {
+        this.delegate.persist(condition);
     }
 
     @Override

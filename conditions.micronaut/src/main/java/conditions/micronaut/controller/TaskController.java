@@ -11,7 +11,6 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 
 import javax.transaction.Transactional;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 @Controller
@@ -43,7 +42,7 @@ public class TaskController {
         final var condition = new Condition("TYPE", new Pid("222222"));
         condition.changeOwner("333333");
         condition.setBookingLocation(new Country("FR"));
-        this.conditionRepository.save(condition);
+        this.conditionRepository.persist(condition);
 
         return new conditions.api.model.ConditionId()
                 .id(String.valueOf(condition.getConditionId().getId()));
@@ -71,7 +70,6 @@ public class TaskController {
     void discardCondition(@PathVariable("conditionId") String conditionId) {
         final var condition = this.conditionRepository.findOne(ConditionRepository.Specifications.conditionId(conditionId));
         condition.discard();
-        this.conditionRepository.save(condition);
     }
 
     @Put("/conditions/{conditionId}")
@@ -79,7 +77,6 @@ public class TaskController {
     void updateCondition(@PathVariable("conditionId") String conditionId) {
         final var condition = this.conditionRepository.findOne(ConditionRepository.Specifications.conditionId(conditionId));
         condition.getMetadata().set("CID", Metadata.Type.CLIENT, "56339");
-        this.conditionRepository.save(condition);
     }
 
     @Put("/tasks/{taskId}/complete")
@@ -94,7 +91,7 @@ public class TaskController {
             decisionTask.setOutcome(completeTaskDto.getDecision());
         }
         task.submit();
-        this.taskRepository.save(task);
+        this.taskRepository.persist(task);
     }
 
     @Get("/conditions/hist")

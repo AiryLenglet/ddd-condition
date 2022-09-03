@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 public interface ConditionRevisionRepository {
 
-    void save(ConditionRevision condition);
+    void persist(ConditionRevision condition);
 
     Stream<ConditionRevision> findAll(Specification<ConditionRevision> specification);
 

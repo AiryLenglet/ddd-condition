@@ -22,12 +22,8 @@ public class EntityManagerRepository<T> {
         this.type = type;
     }
 
-    public void save(T entity) {
-        if (this.entityManager.contains(entity)) {
-            this.entityManager.merge(entity);
-        } else {
-            this.entityManager.persist(entity);
-        }
+    public void persist(T entity) {
+        this.entityManager.persist(entity);
     }
 
     public Stream<T> findAll(Specification<T> specification) {

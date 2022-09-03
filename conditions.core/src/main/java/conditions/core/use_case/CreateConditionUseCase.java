@@ -19,7 +19,7 @@ public class CreateConditionUseCase {
     @Transactional
     public Response execute() {
         final var condition = new Condition("transaction", new Pid("222222"));
-        this.conditionRepository.save(condition);
+        this.conditionRepository.persist(condition);
         return new Response(String.valueOf(condition.getConditionId().getId()));
     }
 

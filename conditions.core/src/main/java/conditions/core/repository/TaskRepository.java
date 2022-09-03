@@ -8,7 +8,7 @@ import conditions.core.model.TaskId;
 import java.util.stream.Stream;
 
 public interface TaskRepository {
-    void save(Task task);
+    void persist(Task task);
 
     Task findOne(Specification<Task> specification);
 

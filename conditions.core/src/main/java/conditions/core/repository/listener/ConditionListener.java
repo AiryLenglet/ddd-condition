@@ -27,7 +27,7 @@ public class ConditionListener {
     @PostUpdate
     public void postPersist(Condition condition) {
 
-        this.conditionRevisionRepository.save(new ConditionRevision(
+        this.conditionRevisionRepository.persist(new ConditionRevision(
                 condition.getConditionId(),
                 condition.getOwner(),
                 condition.getVersion(),

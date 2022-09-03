@@ -28,9 +28,9 @@ public class BusinessAuditTrailConditionRepository implements ConditionRepositor
     }
 
     @Override
-    public void save(Condition condition) {
+    public void persist(Condition condition) {
         LOGGER.info("save {}", condition);
-        this.delegate.save(condition);
+        this.delegate.persist(condition);
         this.businessAuditTrail.save("user " + this.userProvider.currentUser() + " updated condition " + condition.getConditionId().getId());
     }
 

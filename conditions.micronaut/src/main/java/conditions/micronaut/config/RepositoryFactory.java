@@ -57,8 +57,8 @@ public class RepositoryFactory {
 
         @Transactional(value = Transactional.TxType.REQUIRES_NEW)
         @Override
-        public void save(ConditionRevision condition) {
-            this.delegate.save(condition);
+        public void persist(ConditionRevision condition) {
+            this.delegate.persist(condition);
         }
 
         @Override
@@ -79,8 +79,8 @@ public class RepositoryFactory {
 
         @Transactional(value = Transactional.TxType.REQUIRES_NEW)
         @Override
-        public void save(TaskRevision taskRevision) {
-            this.delegate.save(taskRevision);
+        public void persist(TaskRevision taskRevision) {
+            this.delegate.persist(taskRevision);
         }
 
         @Override

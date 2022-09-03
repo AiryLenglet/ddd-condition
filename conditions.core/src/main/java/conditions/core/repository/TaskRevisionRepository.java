@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 public interface TaskRevisionRepository {
 
-    void save(TaskRevision taskRevision);
+    void persist(TaskRevision taskRevision);
 
     Stream<TaskRevision> findAll(Specification<TaskRevision> specification);
 

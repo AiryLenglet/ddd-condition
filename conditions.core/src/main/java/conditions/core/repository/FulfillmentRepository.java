@@ -7,7 +7,7 @@ import conditions.core.model.FulfillmentId;
 import java.util.stream.Stream;
 
 public interface FulfillmentRepository {
-    void save(Fulfillment fulfillment);
+    void persist(Fulfillment fulfillment);
 
     Fulfillment findOne(Specification<Fulfillment> fulfillmentId);
 
